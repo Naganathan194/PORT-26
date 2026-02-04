@@ -1,0 +1,37 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import EventCardPreview from '../components/EventCardPreview';
+import { EVENTS } from '../constants';
+
+const FeaturedEventsSection: React.FC = () => {
+  return (
+    <section className="py-24 bg-slate-900/50">
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="flex justify-between items-end mb-16">
+          <div>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-4">Featured Events</h2>
+            <p className="text-slate-400 max-w-xl">Discover our flagship competitions designed to test your limits.</p>
+          </div>
+          <Link to="/events" className="hidden md:flex items-center text-amber-400 hover:text-amber-300 font-medium transition-colors">
+            View All Events <ArrowRight className="w-5 h-5 ml-2" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {EVENTS.slice(0, 3).map((event) => (
+            <EventCardPreview key={event.id} event={event} />
+          ))}
+        </div>
+
+        <div className="mt-12 text-center md:hidden">
+          <Link to="/events" className="inline-flex items-center text-amber-400 hover:text-amber-300 font-medium">
+            View All Events <ArrowRight className="w-5 h-5 ml-2" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default FeaturedEventsSection;
