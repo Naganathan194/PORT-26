@@ -24,41 +24,59 @@ interface TrackColumnProps {
 
 const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, delayBase }) => {
   return (
-    <div className="relative flex flex-col h-full pl-6 md:pl-0">
+    <div className="relative flex flex-col h-full">
       {/* Header */}
-      <div className="flex items-center justify-start md:justify-center mb-8 z-10">
-        <div className={`p-3 rounded-xl border ${theme.border} ${theme.bg} backdrop-blur-md shadow-lg`}>
-          {React.cloneElement(icon as React.ReactElement, { className: `w-5 h-5 ${theme.text}` })}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: delayBase }}
+        className="flex items-center justify-center mb-6 md:mb-8 z-10"
+      >
+        <div className={`p-2.5 md:p-3 rounded-xl border ${theme.border} ${theme.bg} backdrop-blur-md shadow-lg`}>
+          {React.cloneElement(icon as React.ReactElement, { className: `w-4 h-4 md:w-5 md:h-5 ${theme.text}` })}
         </div>
-        <h3 className="ml-3 text-lg font-serif font-bold text-white tracking-wide">{title}</h3>
-      </div>
+        <h3 className="ml-2 md:ml-3 text-base md:text-lg font-serif font-bold text-white tracking-wide">{title}</h3>
+      </motion.div>
 
-      {/* Track Line - Desktop & Mobile (Left Aligned on Mobile/Desktop for tightness) */}
-      <div className={`absolute top-14 bottom-0 left-[2.25rem] md:left-8 lg:left-10 w-px bg-gradient-to-b ${theme.line} to-transparent opacity-40`} />
+      {/* Track Line - Responsive positioning */}
+      <div className={`absolute top-12 md:top-14 bottom-0 left-1/2 -translate-x-1/2 w-px bg-gradient-to-b ${theme.line} to-transparent opacity-40`} />
 
       {/* Events */}
-      <div className="space-y-4 relative z-10 flex-grow pl-14 md:pl-16 lg:pl-20">
+      <div className="space-y-3 md:space-y-4 relative z-10 flex-grow px-2 md:px-4">
         {events.map((evt, idx) => (
           <motion.div
             key={idx}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: delayBase + (idx * 0.15) }}
-            className={`relative bg-slate-900/80 backdrop-blur-md border border-white/5 p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow}`}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+              delay: delayBase + (idx * 0.1),
+              type: "spring",
+              stiffness: 100,
+              damping: 15
+            }}
+            whileHover={{ scale: 1.02, y: -2 }}
+            className={`relative bg-slate-900/80 backdrop-blur-md border border-white/5 p-3 md:p-4 rounded-lg md:rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow}`}
             style={{ borderColor: 'rgba(255,255,255,0.05)' }} 
           >
             {/* Hover Gradient Border Effect */}
-            <div className={`absolute inset-0 rounded-xl border border-transparent ${theme.border} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+            <div className={`absolute inset-0 rounded-lg md:rounded-xl border border-transparent ${theme.border} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
             
             {/* Connector Dot */}
-            <div className={`absolute top-1/2 -left-[2.35rem] md:-left-[2.85rem] lg:-left-[3.85rem] w-3 h-3 rounded-full ${theme.bg.replace('/10', '')} border border-slate-950 shadow-[0_0_8px_currentColor] z-20`} />
+            <motion.div 
+              initial={{ scale: 0 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: delayBase + (idx * 0.1) + 0.2 }}
+              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -ml-[50%] md:-ml-[calc(50%+0.5rem)] w-2.5 md:w-3 h-2.5 md:h-3 rounded-full ${theme.bg.replace('/10', '')} border-2 border-slate-950 shadow-[0_0_8px_currentColor] z-20`} 
+            />
             
             <div className="flex flex-col relative z-10">
-              <span className={`text-[10px] font-bold ${theme.text} mb-1 tracking-widest uppercase`}>{evt.time}</span>
-              <h4 className="text-white font-bold text-base mb-1 group-hover:text-white transition-colors leading-tight">{evt.title}</h4>
-              <div className="text-slate-500 text-xs flex items-center">
-                <MapPin className="w-3 h-3 mr-1 opacity-70" /> {evt.desc}
+              <span className={`text-[9px] md:text-[10px] font-bold ${theme.text} mb-1 tracking-widest uppercase`}>{evt.time}</span>
+              <h4 className="text-white font-bold text-sm md:text-base mb-1 group-hover:text-white transition-colors leading-tight">{evt.title}</h4>
+              <div className="text-slate-500 text-[10px] md:text-xs flex items-center">
+                <MapPin className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-70" /> {evt.desc}
               </div>
             </div>
           </motion.div>
@@ -119,7 +137,7 @@ const TimelineSection: React.FC = () => {
             </motion.p>
          </div>
 
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
             <TrackColumn 
               title="Technical" 
               icon={<Cpu />} 
@@ -144,7 +162,7 @@ const TimelineSection: React.FC = () => {
                 line: 'from-fuchsia-500/50'
               }}
               events={nonTechTrack}
-              delayBase={0.2}
+              delayBase={0.15}
             />
             <TrackColumn 
               title="Workshops" 
@@ -157,7 +175,7 @@ const TimelineSection: React.FC = () => {
                 line: 'from-emerald-500/50'
               }}
               events={workshopTrack}
-              delayBase={0.4}
+              delayBase={0.3}
             />
          </div>
        </div>
