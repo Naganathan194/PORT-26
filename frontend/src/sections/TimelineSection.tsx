@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, Music, PenTool, MapPin } from 'lucide-react';
+import { EVENTS, WORKSHOPS } from '../constants';
 
 interface TimelineItem {
   time: string;
@@ -22,9 +23,10 @@ interface TrackColumnProps {
   };
   events: TimelineItem[];
   delayBase: number;
+  actionUrl?: string;
 }
 
-const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, delayBase }) => {
+const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, delayBase, actionUrl }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
@@ -50,8 +52,19 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
 
       {/* Events */}
       <div className="space-y-3 md:space-y-4 relative z-10 flex-grow pr-2 md:pr-4">
-        {events.map((evt, idx) => (
-          <div key={idx} className="relative">
+        {events.map((evt, idx) => {
+          let href = actionUrl ?? '#';
+          const titleLower = evt.title.toLowerCase();
+          const workshopMatch = WORKSHOPS.find(w => w.title.toLowerCase() === titleLower || w.title.toLowerCase().includes(titleLower) || titleLower.includes(w.title.toLowerCase()));
+          if (workshopMatch) {
+            href = `/#/workshops#${workshopMatch.id}`;
+          } else {
+            const eventMatch = EVENTS.find(e => e.title.toLowerCase() === titleLower || e.title.toLowerCase().includes(titleLower) || titleLower.includes(e.title.toLowerCase()));
+            if (eventMatch) href = `/#/events#${eventMatch.id}`;
+          }
+
+          return (
+            <div key={idx} className="relative">
             {/* Dot positioned on the vertical line, centered to the card */}
             <div className="absolute left-6 md:left-8 lg:left-10 -translate-x-1/2 z-20 top-1/2 -translate-y-1/2 pointer-events-none">
               <motion.div
@@ -95,17 +108,18 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
               </motion.div>
             </div>
 
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: delayBase + (idx * 0.15) }}
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className={`relative bg-slate-900/80 backdrop-blur-md border border-white/5 p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
-              style={{ borderColor: 'rgba(255,255,255,0.05)' }}
-            >
+            <a href={href} className="block">
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: delayBase + (idx * 0.15) }}
+                onMouseEnter={() => setHoveredIndex(idx)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                className={`relative bg-slate-900/80 backdrop-blur-md border border-white/5 p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
+                style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+              >
               {/* Hover Gradient Border Effect */}
               <div className={`absolute inset-0 rounded-lg md:rounded-xl border border-transparent ${theme.border} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
@@ -118,9 +132,11 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
                   <MapPin className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-70" /> {evt.desc}
                 </div>
               </div>
-            </motion.div>
+              </motion.div>
+            </a>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -177,21 +193,36 @@ const TimelineSection: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Day 1 - Workshops */}
-        <div className="mb-16">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center mb-8"
-          >
-            <div className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
-              <span className="text-emerald-400 font-bold text-sm md:text-base tracking-wider">DAY 1</span>
-            </div>
-            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-emerald-500/50 to-transparent"></div>
-          </motion.div>
+        {/* Desktop: Single-row layout with labels on top */}
+        <div className="hidden md:block mb-12">
+          <div className="grid grid-cols-3 items-center gap-4 mb-8 justify-items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="flex items-center justify-center w-full"
+            >
+              <div className="inline-flex px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
+                <span className="text-emerald-400 font-bold text-sm md:text-base tracking-wider">DAY 1</span>
+              </div>
+            </motion.div>
 
-          <div className="grid grid-cols-1 max-w-2xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="col-span-2 flex items-center justify-center w-full"
+            >
+              <div className="inline-flex px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 border border-cyan-500/30 mx-auto">
+                <span className="font-bold text-sm md:text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-400">DAY 2</span>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-8 lg:gap-10 relative">
+            {/* Vertical divider between Day 1 and Day 2 */}
+            <div className="absolute left-1/3 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
+            
             <TrackColumn
               title="Workshops"
               icon={<PenTool />}
@@ -207,24 +238,7 @@ const TimelineSection: React.FC = () => {
               events={workshopTrack}
               delayBase={0}
             />
-          </div>
-        </div>
 
-        {/* Day 2 - Technical & Non-Technical */}
-        <div>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center mb-8"
-          >
-            <div className="px-4 py-2 bg-amber-500/20 border border-amber-500/40 rounded-full">
-              <span className="text-amber-400 font-bold text-sm md:text-base tracking-wider">DAY 2</span>
-            </div>
-            <div className="ml-4 h-px flex-1 bg-gradient-to-r from-amber-500/50 to-transparent"></div>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
             <TrackColumn
               title="Technical"
               icon={<Cpu />}
@@ -240,6 +254,7 @@ const TimelineSection: React.FC = () => {
               events={technicalTrack}
               delayBase={0.15}
             />
+
             <TrackColumn
               title="Non-Technical"
               icon={<Music />}
@@ -256,6 +271,84 @@ const TimelineSection: React.FC = () => {
               delayBase={0.3}
             />
           </div>
+        </div>
+
+        {/* Mobile: Stack with Day 2 label after Workshops */}
+        <div className="md:hidden mb-12 space-y-8">
+          {/* Day 1 Label */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center justify-center"
+          >
+            <div className="inline-flex px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
+              <span className="text-emerald-400 font-bold text-sm tracking-wider">DAY 1</span>
+            </div>
+          </motion.div>
+
+          {/* Workshops */}
+          <TrackColumn
+            title="Workshops"
+            icon={<PenTool />}
+            theme={{
+              text: 'text-emerald-400',
+              bg: 'bg-emerald-500/10',
+              border: 'border-emerald-500/30',
+              glow: 'hover:shadow-[0_0_30px_-5px_rgba(52,211,153,0.15)]',
+              line: 'from-emerald-500/50',
+              dotGlow: '0 0 25px 8px rgba(52,211,153,0.7), 0 0 50px 15px rgba(52,211,153,0.3)',
+              dotSolid: 'bg-emerald-400'
+            }}
+            events={workshopTrack}
+            delayBase={0}
+          />
+
+          {/* Day 2 Label */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="flex items-center justify-center"
+          >
+            <div className="inline-flex px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 border border-cyan-500/30">
+              <span className="font-bold text-sm tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-400">DAY 2</span>
+            </div>
+          </motion.div>
+
+          {/* Technical */}
+          <TrackColumn
+            title="Technical"
+            icon={<Cpu />}
+            theme={{
+              text: 'text-cyan-400',
+              bg: 'bg-cyan-500/10',
+              border: 'border-cyan-500/30',
+              glow: 'hover:shadow-[0_0_30px_-5px_rgba(34,211,238,0.15)]',
+              line: 'from-cyan-500/50',
+              dotGlow: '0 0 25px 8px rgba(34,211,238,0.7), 0 0 50px 15px rgba(34,211,238,0.3)',
+              dotSolid: 'bg-cyan-400'
+            }}
+            events={technicalTrack}
+            delayBase={0.15}
+          />
+
+          {/* Non-Technical */}
+          <TrackColumn
+            title="Non-Technical"
+            icon={<Music />}
+            theme={{
+              text: 'text-fuchsia-400',
+              bg: 'bg-fuchsia-500/10',
+              border: 'border-fuchsia-500/30',
+              glow: 'hover:shadow-[0_0_30px_-5px_rgba(232,121,249,0.15)]',
+              line: 'from-fuchsia-500/50',
+              dotGlow: '0 0 25px 8px rgba(232,121,249,0.7), 0 0 50px 15px rgba(232,121,249,0.3)',
+              dotSolid: 'bg-fuchsia-400'
+            }}
+            events={nonTechTrack}
+            delayBase={0.3}
+          />
         </div>
       </div>
     </section>

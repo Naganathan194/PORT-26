@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, MapPin, Filter, Search } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { EVENTS } from '../constants';
+import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 
 const Events: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'technical' | 'non-technical'>('all');
@@ -68,7 +68,7 @@ const Events: React.FC = () => {
         >
           <AnimatePresence>
             {filteredEvents.map((event) => (
-              <motion.div
+              <motion.div id={event.id}
                 key={event.id}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -118,9 +118,15 @@ const Events: React.FC = () => {
                   </div>
 
                   <div className="mt-auto">
-                    <Link to="/register" className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 ${event.status === 'closed' ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : 'bg-white/5 hover:bg-violet-600 text-white hover:shadow-lg hover:shadow-violet-900/40'}`}>
-                      {event.status === 'closed' ? 'Registration Closed' : 'Register Now'}
-                    </Link>
+                    {event.status === 'closed' ? (
+                      <div className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 bg-slate-800 text-slate-500 cursor-not-allowed`}>
+                        Registration Closed
+                      </div>
+                    ) : (
+                      <a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 bg-white/5 hover:bg-violet-600 text-white hover:shadow-lg hover:shadow-violet-900/40`}>
+                        Register Now
+                      </a>
+                    )}
                   </div>
                 </div>
               </motion.div>

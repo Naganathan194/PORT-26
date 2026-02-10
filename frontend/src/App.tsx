@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Workshops from './pages/Workshops';
@@ -21,6 +22,7 @@ const App: React.FC = () => {
           </Routes>
         </main>
         <Footer />
+        <BackToTop />
       </div>
     </HashRouter>
   );

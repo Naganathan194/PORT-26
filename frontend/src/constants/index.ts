@@ -169,3 +169,7 @@ export const COORDINATORS: Coordinator[] = [
     email: 'events@university.edu'
   }
 ];
+
+// External booking links (Townscript)
+export const EVENTS_TOWNSCRIPT_URL = 'https://www.townscript.com/v2/widget/port-2026/booking/team';
+export const WORKSHOPS_TOWNSCRIPT_URL = 'https://www.townscript.com/v2/widget/workshop-of-port-2026/booking/tickets';

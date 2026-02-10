@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import logo from '../images/Logo 3.png';
@@ -22,6 +23,14 @@ const Navbar: React.FC = () => {
     { name: 'Register', path: '/register' },
   ];
 
+  const scrollToTop = () => {
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
+  };
+
   return (
     <nav className="sticky top-0 w-full z-50 bg-slate-950 border-b border-white/10 py-4 shadow-lg">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
@@ -39,6 +48,7 @@ const Navbar: React.FC = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                onClick={scrollToTop}
                 className={`relative text-sm uppercase tracking-widest font-medium hover:text-amber-400 transition-colors duration-300 ${location.pathname === link.path ? 'text-amber-400' : 'text-slate-300'}`}
               >
                 {link.name}
@@ -52,11 +62,11 @@ const Navbar: React.FC = () => {
 
         {/* Get Tickets Button - Right */}
         <div className="hidden md:block">
-          <Link to="/register">
+          <a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer">
             <button className="px-6 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium rounded-full shadow-lg shadow-violet-900/50 hover:shadow-violet-900/80 hover:scale-105 transition-all duration-300 text-sm">
               Get Tickets
             </button>
-          </Link>
+          </a>
         </div>
 
         {/* Mobile Toggle */}
@@ -81,7 +91,10 @@ const Navbar: React.FC = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    scrollToTop();
+                  }}
                   className={`block px-3 py-4 text-base font-medium border-b border-white/5 ${location.pathname === link.path ? 'text-amber-400' : 'text-slate-300'}`}
                 >
                   {link.name}

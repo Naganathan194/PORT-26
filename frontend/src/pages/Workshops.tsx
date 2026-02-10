@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { WORKSHOPS } from '../constants';
+import { WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
 
 const Workshops: React.FC = () => {
   return (
@@ -23,7 +23,7 @@ const Workshops: React.FC = () => {
 
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 mt-16 space-y-12">
         {WORKSHOPS.map((workshop, idx) => (
-          <motion.div
+          <motion.div id={workshop.id}
             key={workshop.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -92,9 +92,9 @@ const Workshops: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <Link to="/register" className="w-full sm:w-auto px-8 py-3 bg-white text-slate-900 font-bold rounded-lg hover:bg-amber-400 transition-colors text-center">
+                  <a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto px-8 py-3 bg-white text-slate-900 font-bold rounded-lg hover:bg-amber-400 transition-colors text-center">
                     Register Now
-                  </Link>
+                  </a>
                 </div>
               </div>
             </div>

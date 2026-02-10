@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { Calendar, ArrowRight } from 'lucide-react';
 import type { Event } from '../types';
 
@@ -27,9 +27,9 @@ const EventCardPreview: React.FC<EventCardPreviewProps> = ({ event }) => (
         <Calendar className="w-4 h-4 mr-2" />
         {event.date}
       </div>
-      <Link to="/events" className="inline-flex items-center text-amber-400 font-medium text-sm group-hover:translate-x-2 transition-transform">
+      <a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-amber-400 font-medium text-sm group-hover:translate-x-2 transition-transform">
         View Details <ArrowRight className="w-4 h-4 ml-2" />
-      </Link>
+      </a>
     </div>
   </motion.div>
 );

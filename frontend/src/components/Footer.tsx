@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { EVENTS_TOWNSCRIPT_URL, WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
 
 const Footer: React.FC = () => {
@@ -24,9 +25,9 @@ const Footer: React.FC = () => {
           <div>
             <h4 className="text-white font-serif font-bold text-lg mb-6">Quick Links</h4>
             <ul className="space-y-3 text-slate-400 text-sm">
-              <li><Link to="/events" className="hover:text-amber-400 transition-colors">All Events</Link></li>
-              <li><Link to="/workshops" className="hover:text-amber-400 transition-colors">Workshops</Link></li>
-              <li><Link to="/register" className="hover:text-amber-400 transition-colors">Register</Link></li>
+              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">All Events</a></li>
+              <li><a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">Workshops</a></li>
+              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">Register</a></li>
               <li><a href="#" className="hover:text-amber-400 transition-colors">Sponsorship</a></li>
             </ul>
           </div>
