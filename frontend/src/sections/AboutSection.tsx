@@ -1,13 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, Award } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const AboutSection: React.FC = () => {
+  const { theme, colors } = useTheme();
+  
   return (
-    <section className="relative max-w-8xl lg:px-10 py-24 bg-slate-950 overflow-hidden">
+    <section className={`relative max-w-8xl lg:px-10 py-24 ${colors.bgPrimary} overflow-hidden transition-colors duration-300`}>
       {/* Abstract Background Elements */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-violet-600/10 to-transparent rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-t from-blue-600/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
+      <div className={`absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b ${theme === 'light' ? 'from-violet-500/5' : 'from-violet-600/10'} to-transparent rounded-full blur-[120px] pointer-events-none`} />
+      <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-t ${theme === 'light' ? 'from-blue-500/5' : 'from-blue-600/10'} to-transparent rounded-full blur-[100px] pointer-events-none`} />
 
       <div className="w-full max-w-[95%] xl:max-w-[1600px] mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
@@ -18,19 +21,19 @@ const AboutSection: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="lg:pr-8"
           >
-            <h4 className="text-amber-400 font-bold tracking-widest uppercase text-xs md:text-sm mb-4">
+            <h4 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-bold tracking-widest uppercase text-xs md:text-sm mb-4`}>
               Who We Are
             </h4>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6 leading-tight">
+            <h2 className={`text-4xl md:text-5xl lg:text-6xl font-serif font-bold ${colors.textPrimary} mb-6 leading-tight transition-colors duration-300`}>
               Department of <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
                 Information Technology
               </span>
             </h2>
-            <p className="text-slate-300 text-lg leading-relaxed mb-6 text-justify">
+            <p className={`${colors.textSecondary} text-lg leading-relaxed mb-6 text-justify transition-colors duration-300`}>
               We are the architects of the digital realm, fostering a culture where code meets creativity. Our mission is to bridge the gap between theoretical knowledge and real-world application, empowering the next generation of tech leaders.
             </p>
-            <p className="text-slate-400 leading-relaxed font-light text-justify">
+            <p className={`${colors.textTertiary} leading-relaxed font-light text-justify transition-colors duration-300`}>
               Through cutting-edge curriculum and industry-grade events like PORT, we provide a platform for students to challenge the status quo, innovate fearlessly, and engineer solutions for tomorrow's complex problems.
             </p>
           </motion.div>
@@ -41,7 +44,7 @@ const AboutSection: React.FC = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative h-[400px] lg:h-[500px] w-full bg-slate-900/40 rounded-[2rem] border border-white/10 backdrop-blur-sm overflow-hidden flex items-center justify-center group"
+            className={`relative h-[400px] lg:h-[500px] w-full ${theme === 'light' ? 'bg-slate-100/60 border-slate-300' : 'bg-slate-900/40 border-white/10'} rounded-[2rem] border backdrop-blur-sm overflow-hidden flex items-center justify-center group transition-colors duration-300`}
           >
             {/* Grid Background */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px]" />
@@ -51,11 +54,11 @@ const AboutSection: React.FC = () => {
             <div className="absolute w-64 h-64 bg-violet-500/20 rounded-full blur-[80px] animate-pulse delay-75" />
 
             {/* Central Content */}
-            <div className="relative z-10 text-center p-8 backdrop-blur-sm rounded-3xl border border-white/5 bg-slate-950/30 shadow-2xl">
-              <div className="text-7xl font-serif font-bold text-white mb-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-slate-400">
-                25<span className="text-4xl align-top text-amber-400">+</span>
+            <div className={`relative z-10 text-center p-8 backdrop-blur-sm rounded-3xl border ${theme === 'light' ? 'border-slate-200 bg-white/50' : 'border-white/5 bg-slate-950/30'} shadow-2xl transition-colors duration-300`}>
+              <div className={`text-7xl font-serif font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-b ${theme === 'light' ? 'from-slate-900 to-slate-600' : 'from-white to-slate-400'}`}>
+                25<span className={`text-4xl align-top ${theme === 'light' ? 'text-amber-600' : 'text-amber-400'}`}>+</span>
               </div>
-              <div className="text-slate-400 uppercase tracking-[0.2em] text-xs font-bold">
+              <div className={`${colors.textTertiary} uppercase tracking-[0.2em] text-xs font-bold transition-colors duration-300`}>
                 Years of Excellence
               </div>
             </div>
@@ -69,10 +72,10 @@ const AboutSection: React.FC = () => {
             </div>
 
             {/* Floating Icons */}
-            <div className="absolute top-12 right-12 p-4 bg-slate-800/50 backdrop-blur-md rounded-2xl border border-white/10 animate-float shadow-lg">
-              <Cpu className="text-cyan-400 w-6 h-6" />
+            <div className={`absolute top-12 right-12 p-4 ${theme === 'light' ? 'bg-white/80 border-slate-200' : 'bg-slate-800/50 border-white/10'} backdrop-blur-md rounded-2xl border animate-float shadow-lg transition-colors duration-300`}>
+              <Cpu className={`${theme === 'light' ? 'text-cyan-600' : 'text-cyan-400'} w-6 h-6`} />
             </div>
-            <div className="absolute bottom-16 left-12 p-4 bg-slate-800/50 backdrop-blur-md rounded-2xl border border-white/10 animate-float shadow-lg" style={{ animationDelay: '2s' }}>
+            <div className={`absolute bottom-16 left-12 p-4 ${theme === 'light' ? 'bg-white/80 border-slate-200' : 'bg-slate-800/50 border-white/10'} backdrop-blur-md rounded-2xl border animate-float shadow-lg transition-colors duration-300`} style={{ animationDelay: '2s' }}>
               <Award className="text-violet-400 w-6 h-6" />
             </div>
           </motion.div>

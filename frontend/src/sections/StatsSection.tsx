@@ -2,14 +2,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import StatCard from '../components/StatCard';
 import { Calendar, Users, Trophy, Award } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const StatsSection: React.FC = () => {
+  const { theme, colors } = useTheme();
   // Event date - updated to March 5, 2026
   const eventDate = '2026-03-05T09:00:00';
 
   return (
-    <section className="py-24 bg-slate-950 relative">
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-violet-800 to-transparent" />
+    <section className={`py-24 ${colors.bgPrimary} relative transition-colors duration-300`}>
+      <div className={`absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent ${theme === 'light' ? 'via-violet-400' : 'via-violet-800'} to-transparent`} />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
           <StatCard 
@@ -20,9 +22,9 @@ const StatsSection: React.FC = () => {
             isCountdown={true}
             targetDate={eventDate}
           />
-          <StatCard label="Participants" value="5000+" icon={<Users className="w-6 h-6" />} delay={0.1} />
-          <StatCard label="Prize Pool" value="50000$" icon={<Trophy className="w-6 h-6" />} delay={0.2} />
-          <StatCard label="Colleges" value="120+" icon={<Award className="w-6 h-6" />} delay={0.3} />
+          <StatCard label="Day 1" value="4 Workshops" icon={<Users className="w-6 h-6" />} delay={0.1} />
+          <StatCard label="Day 2" value="8 Events" icon={<Trophy className="w-6 h-6" />} delay={0.2} />
+          <StatCard label="Prize Pool" value="₹ 25000" icon={<Award className="w-6 h-6" />} delay={0.3} />
         </div>
       </div>
     </section>

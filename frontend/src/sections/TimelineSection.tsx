@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Music, PenTool, MapPin } from 'lucide-react';
+import { Cpu, Music, PenTool } from 'lucide-react';
 import { EVENTS, WORKSHOPS } from '../constants';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface TimelineItem {
   time: string;
@@ -28,6 +29,7 @@ interface TrackColumnProps {
 
 const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, delayBase, actionUrl }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { theme: appTheme, colors } = useTheme();
 
   return (
     <div className="relative flex flex-col h-full">
@@ -42,8 +44,29 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
         <div className={`p-2.5 md:p-3 rounded-xl border ${theme.border} ${theme.bg} backdrop-blur-md shadow-lg`}>
           {React.cloneElement(icon as React.ReactElement, { className: `w-4 h-4 md:w-5 md:h-5 ${theme.text}` })}
         </div>
-        <h3 className="ml-2 md:ml-3 text-base md:text-lg font-serif font-bold text-white tracking-wide">{title}</h3>
+        <h3 className={`ml-2 md:ml-3 text-base md:text-lg font-serif font-bold ${colors.textPrimary} tracking-wide transition-colors duration-300`}>{title}</h3>
       </motion.div>
+      {title === 'Workshops' && (
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
+            <span className="text-emerald-400 font-bold text-xs md:text-sm tracking-wider">09:00 AM - 05:00 PM</span>
+          </div>
+        </div>
+      )}
+      {title === 'Technical' && (
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex px-4 py-2 bg-cyan-500/20 border border-cyan-500/40 rounded-full">
+            <span className="text-cyan-400 font-bold text-xs md:text-sm tracking-wider">10:00 AM - 01:00 PM</span>
+          </div>
+        </div>
+      )}
+      {title === 'Non-Technical' && (
+        <div className="flex justify-center mb-4">
+          <div className="inline-flex px-4 py-2 bg-fuchsia-500/20 border border-fuchsia-500/40 rounded-full">
+            <span className="text-fuchsia-400 font-bold text-xs md:text-sm tracking-wider">02:00 PM - 05:00 PM</span>
+          </div>
+        </div>
+      )}
 
       {/* Track Line - Desktop & Mobile (Left Aligned on Mobile/Desktop for tightness) */}
       <div className={`absolute top-14 bottom-0 left-6 md:left-8 lg:left-10 w-px bg-gradient-to-b ${theme.line} to-transparent opacity-40`} />
@@ -117,20 +140,14 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
                   transition={{ delay: delayBase + (idx * 0.15) }}
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative bg-slate-900/80 backdrop-blur-md border border-white/5 p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
+                  className={`relative ${appTheme === 'light' ? 'bg-white/80 border-slate-200' : 'bg-slate-900/80 border-white/5'} backdrop-blur-md border p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
                   style={{ borderColor: 'rgba(255,255,255,0.05)' }}
                 >
                   {/* Hover Gradient Border Effect */}
                   <div className={`absolute inset-0 rounded-lg md:rounded-xl border border-transparent ${theme.border} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
                   <div className="flex flex-col relative z-10">
-                    <div className={`inline-flex items-center justify-center px-2.5 py-1 rounded-md ${theme.bg} ${theme.border} border mb-3 self-start`}>
-                      <span className={`text-[10px] md:text-xs font-bold ${theme.text} tracking-wider`}>{evt.time}</span>
-                    </div>
-                    <h4 className="text-white font-bold text-sm md:text-base mb-2 group-hover:text-white transition-colors leading-tight">{evt.title}</h4>
-                    <div className="text-slate-500 text-[10px] md:text-xs flex items-center">
-                      <MapPin className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1 opacity-70" /> {evt.desc}
-                    </div>
+                    <h4 className={`${colors.textPrimary} font-bold text-sm md:text-base transition-colors leading-tight`}>{evt.title}</h4>
                   </div>
                 </motion.div>
               </a>
@@ -143,26 +160,28 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
 };
 
 const TimelineSection: React.FC = () => {
+  const { theme, colors } = useTheme();
+  
   const technicalTrack: TimelineItem[] = [
-    { time: 'TBA', title: 'Think it. Link it', desc: 'TBA' },
-    { time: 'TBA', title: 'AI FORGE', desc: 'TBA' },
-    { time: 'TBA', title: 'Two Minds, One Code', desc: 'TBA' },
-    { time: 'TBA', title: 'MINDSPRINT', desc: 'TBA' },
+    { time: '', title: 'Think it. Link it', desc: '' },
+    { time: '', title: 'AI FORGE', desc: '' },
+    { time: '', title: 'Two Minds, One Code', desc: '' },
+    { time: '', title: 'MINDSPRINT', desc: '' },
   ];
   const nonTechTrack: TimelineItem[] = [
-    { time: 'TBA', title: 'GAME ON: FIFA SHOWDOWN', desc: 'TBA' },
-    { time: 'TBA', title: 'Search for Shades', desc: 'TBA' },
-    { time: 'TBA', title: 'Fun Fiesta', desc: 'TBA' },
-    { time: 'TBA', title: 'Gen-Aurora', desc: 'TBA' },
+    { time: '', title: 'GAME ON: FIFA SHOWDOWN', desc: '' },
+    { time: '', title: 'Search for Shades', desc: '' },
+    { time: '', title: 'Fun Fiesta', desc: '' },
+    { time: '', title: 'Gen-Aurora', desc: '' },
   ];
   const workshopTrack: TimelineItem[] = [
-    { time: '09:30 AM', title: 'Gen AI Masterclass', desc: 'Computer Lab 1' },
-    { time: '12:00 PM', title: 'UI/UX Design Systems', desc: 'Design Studio' },
-    { time: '02:30 PM', title: 'Cloud Architecture', desc: 'Computer Lab 2' },
+    { time: '', title: 'Gen AI Masterclass', desc: '' },
+    { time: '', title: 'UI/UX Design Systems', desc: '' },
+    { time: '', title: 'Cloud Architecture', desc: '' },
   ];
 
   return (
-    <section className="py-24 bg-slate-950 relative">
+    <section className={`py-24 ${colors.bgPrimary} relative transition-colors duration-300`}>
       {/* Background noise texture */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
 
@@ -171,7 +190,7 @@ const TimelineSection: React.FC = () => {
           <motion.h4
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-amber-400 font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4"
+            className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4 transition-colors duration-300`}
           >
             The Journey
           </motion.h4>
@@ -179,7 +198,7 @@ const TimelineSection: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6"
+            className={`text-4xl md:text-5xl lg:text-6xl font-serif font-bold ${colors.textPrimary} mb-6 transition-colors duration-300`}
           >
             Event Timeline
           </motion.h2>
@@ -187,10 +206,11 @@ const TimelineSection: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-slate-400 text-lg max-w-2xl mx-auto"
+            className={`${colors.textTertiary} text-lg max-w-2xl mx-auto transition-colors duration-300`}
           >
             Two action-packed days of learning and competition. Curate your own experience from dawn till dusk.
           </motion.p>
+          
         </div>
 
         {/* Desktop: Single-row layout with labels on top */}
@@ -200,7 +220,7 @@ const TimelineSection: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="flex items-center justify-center w-full"
+              className="flex flex-col items-center justify-center w-full mb-6"
             >
               <div className="inline-flex px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
                 <span className="text-emerald-400 font-bold text-sm md:text-base tracking-wider">DAY 1</span>
@@ -211,7 +231,7 @@ const TimelineSection: React.FC = () => {
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="col-span-2 flex items-center justify-center w-full"
+              className="col-span-2 flex flex-col items-center justify-center w-full mb-6"
             >
               <div className="inline-flex px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 border border-cyan-500/30 mx-auto">
                 <span className="font-bold text-sm md:text-base tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-400">DAY 2</span>
@@ -222,7 +242,7 @@ const TimelineSection: React.FC = () => {
           <div className="grid grid-cols-3 gap-8 lg:gap-10 relative">
             {/* Vertical divider between Day 1 and Day 2 */}
             <div className="absolute left-1/3 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-white/20 to-transparent" />
-
+      
             <TrackColumn
               title="Workshops"
               icon={<PenTool />}
@@ -280,7 +300,7 @@ const TimelineSection: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex items-center justify-center"
+            className="flex flex-col items-center justify-center mb-6"
           >
             <div className="inline-flex px-4 py-2 bg-emerald-500/20 border border-emerald-500/40 rounded-full">
               <span className="text-emerald-400 font-bold text-sm tracking-wider">DAY 1</span>
@@ -309,7 +329,7 @@ const TimelineSection: React.FC = () => {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex items-center justify-center"
+            className="flex flex-col items-center justify-center mb-6"
           >
             <div className="inline-flex px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 to-fuchsia-500/10 border border-cyan-500/30">
               <span className="font-bold text-sm tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-400">DAY 2</span>

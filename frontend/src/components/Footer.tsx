@@ -2,62 +2,65 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { EVENTS_TOWNSCRIPT_URL, WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 
 const Footer: React.FC = () => {
+  const { theme, colors } = useTheme();
+  
   return (
-    <footer className="bg-slate-950 border-t border-white/10 pt-16 pb-8 relative overflow-hidden">
+    <footer className={`${colors.bgPrimary} border-t ${colors.border} pt-16 pb-8 relative overflow-hidden transition-colors duration-300`}>
       {/* Background Decor */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-         <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-violet-900/10 rounded-full blur-[100px]" />
+         <div className={`absolute top-[-20%] right-[-10%] w-[500px] h-[500px] ${theme === 'light' ? 'bg-violet-500/5' : 'bg-violet-900/10'} rounded-full blur-[100px]`} />
       </div>
 
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           <div className="space-y-4">
-            <span className="text-2xl font-serif font-bold text-white tracking-wide">
-             PORT<span className="text-amber-400">.</span>
+            <span className={`text-2xl font-serif font-bold ${colors.textPrimary} tracking-wide transition-colors duration-300`}>
+             PORT<span className={theme === 'light' ? 'text-amber-600' : 'text-amber-400'}>.</span>
             </span>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className={`${colors.textTertiary} text-sm leading-relaxed transition-colors duration-300`}>
               Crafting extraordinary experiences where technology meets artistry. Join us for the grandest celebration of innovation.
             </p>
           </div>
           
           <div>
-            <h4 className="text-white font-serif font-bold text-lg mb-6">Quick Links</h4>
-            <ul className="space-y-3 text-slate-400 text-sm">
-              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">All Events</a></li>
-              <li><a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">Workshops</a></li>
-              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors">Register</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Sponsorship</a></li>
+            <h4 className={`${colors.textPrimary} font-serif font-bold text-lg mb-6 transition-colors duration-300`}>Quick Links</h4>
+            <ul className={`space-y-3 ${colors.textTertiary} text-sm`}>
+              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>All Events</a></li>
+              <li><a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Workshops</a></li>
+              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Register</a></li>
+              <li><a href="#" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Sponsorship</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-serif font-bold text-lg mb-6">Contact</h4>
-            <ul className="space-y-4 text-slate-400 text-sm">
+            <h4 className={`${colors.textPrimary} font-serif font-bold text-lg mb-6 transition-colors duration-300`}>Contact</h4>
+            <ul className={`space-y-4 ${colors.textTertiary} text-sm`}>
               <li className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-violet-500 shrink-0" />
+                <MapPin className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
                 <span>University Campus, Grand Hall,<br />Tech City, NY 10012</span>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-violet-500 shrink-0" />
+                <Phone className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
                 <span>+1 (555) 123-4567</span>
               </li>
               <li className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-violet-500 shrink-0" />
+                <Mail className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
                 <span>hello@PORT.edu</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-slate-500 text-sm">© 2026 PORT Events. All rights reserved.</p>
+        <div className={`border-t ${colors.border} pt-8 flex flex-col md:flex-row justify-between items-center`}>
+          <p className={`${colors.textTertiary} text-sm`}>© 2026 PORT Events. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Facebook className="w-5 h-5" /></a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Instagram className="w-5 h-5" /></a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
+            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Facebook className="w-5 h-5" /></a>
+            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Twitter className="w-5 h-5" /></a>
+            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Instagram className="w-5 h-5" /></a>
+            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Linkedin className="w-5 h-5" /></a>
           </div>
         </div>
       </div>
