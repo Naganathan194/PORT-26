@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { EVENTS_TOWNSCRIPT_URL, WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, MapPin, Phone } from 'lucide-react';
+import { Instagram, Mail, MapPin } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 const Footer: React.FC = () => {
@@ -28,10 +27,15 @@ const Footer: React.FC = () => {
           <div>
             <h4 className={`${colors.textPrimary} font-serif font-bold text-lg mb-6 transition-colors duration-300`}>Quick Links</h4>
             <ul className={`space-y-3 ${colors.textTertiary} text-sm`}>
-              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>All Events</a></li>
-              <li><a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Workshops</a></li>
-              <li><a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Register</a></li>
-              <li><a href="#" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Sponsorship</a></li>
+              <li>
+                <Link to="/events" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>All Events</Link>
+              </li>
+              <li>
+                <Link to="/workshops" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Workshops</Link>
+              </li>
+              <li>
+                <Link to="/register" className={`${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors`}>Register</Link>
+              </li>
             </ul>
           </div>
 
@@ -40,28 +44,22 @@ const Footer: React.FC = () => {
             <ul className={`space-y-4 ${colors.textTertiary} text-sm`}>
               <li className="flex items-start space-x-3">
                 <MapPin className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
-                <span>University Campus, Grand Hall,<br />Tech City, NY 10012</span>
+                <span>Department of Information Technology,<br/>Sona College of Technology,<br/>Salem</span>
               </li>
               <li className="flex items-center space-x-3">
-                <Phone className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
-                <span>+1 (555) 123-4567</span>
+                <Instagram className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
+                <a href="https://www.instagram.com/sona_it_ads_page/" target="_blank" rel="noopener noreferrer" className={`${colors.textTertiary} hover:underline`}>@sona_it_ads_page</a>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail className={`w-5 h-5 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'} shrink-0`} />
-                <span>hello@PORT.edu</span>
+                <a href="mailto:port.it@sonatech.ac.in" className={`${colors.textTertiary} hover:underline`}>port.it@sonatech.ac.in</a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className={`border-t ${colors.border} pt-8 flex flex-col md:flex-row justify-between items-center`}>
-          <p className={`${colors.textTertiary} text-sm`}>© 2026 PORT Events. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Facebook className="w-5 h-5" /></a>
-            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Twitter className="w-5 h-5" /></a>
-            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Instagram className="w-5 h-5" /></a>
-            <a href="#" className={`${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-white'} transition-colors`}><Linkedin className="w-5 h-5" /></a>
-          </div>
+        <div className={`border-t ${colors.border} pt-8 flex flex-col items-center`}>
+          <p className={`${colors.textTertiary} text-sm text-center`}>© 2026 PORT Events. All rights reserved.</p>
         </div>
       </div>
     </footer>

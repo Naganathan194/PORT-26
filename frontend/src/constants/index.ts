@@ -1,4 +1,7 @@
 import { Event, Workshop, Coordinator } from '../types';
+import ws1Img from '../assets/workshops/workshop_1.png';
+import ws2Img from '../assets/workshops/workshop_2.png';
+import ws3Img from '../assets/workshops/workshop_3.png';
 
 export const EVENTS: Event[] = [
   {
@@ -124,9 +127,7 @@ export const WORKSHOPS: Workshop[] = [
     domain: 'Artificial Intelligence',
     instructor: {
       name: 'Dr. Sarah Chen',
-      role: 'Lead AI Researcher, Google',
-      image: 'https://picsum.photos/seed/person1/200/200'
-    },
+      role: 'Lead AI Researcher, Google',    },
     date: 'March 14, 2026',
     duration: '6 Hours',
     description: 'Dive deep into LLMs and Stable Diffusion. Build your own generative agents from scratch.',
@@ -134,7 +135,7 @@ export const WORKSHOPS: Workshop[] = [
     price: 1500,
     spotsTotal: 50,
     spotsFilled: 42,
-    image: 'https://picsum.photos/seed/workshop1/800/600'
+    image: ws1Img
   },
   {
     id: 'ws-2',
@@ -142,8 +143,7 @@ export const WORKSHOPS: Workshop[] = [
     domain: 'DevOps',
     instructor: {
       name: 'James Wilson',
-      role: 'Senior Architect, AWS',
-      image: 'https://picsum.photos/seed/person2/200/200'
+      role: 'Senior Architect, AWS'
     },
     date: 'March 14, 2026',
     duration: '4 Hours',
@@ -152,7 +152,7 @@ export const WORKSHOPS: Workshop[] = [
     price: 1200,
     spotsTotal: 40,
     spotsFilled: 15,
-    image: 'https://picsum.photos/seed/workshop2/800/600'
+    image: ws2Img
   },
   {
     id: 'ws-3',
@@ -160,9 +160,7 @@ export const WORKSHOPS: Workshop[] = [
     domain: 'Design',
     instructor: {
       name: 'Elena Rodriguez',
-      role: 'Design Lead, Airbnb',
-      image: 'https://picsum.photos/seed/person3/200/200'
-    },
+      role: 'Design Lead, Airbnb'    },
     date: 'March 15, 2026',
     duration: '5 Hours',
     description: 'Learn to create scalable design systems using Figma and modern design principles.',
@@ -170,7 +168,7 @@ export const WORKSHOPS: Workshop[] = [
     price: 1000,
     spotsTotal: 30,
     spotsFilled: 28,
-    image: 'https://picsum.photos/seed/workshop3/800/600'
+    image: ws3Img
   }
 ];
 
