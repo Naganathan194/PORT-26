@@ -6,6 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
 import { useTheme } from '../contexts/ThemeContext';
 import RegistrationModal from '../components/RegistrationModal';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
 
 const Workshops: React.FC = () => {
   const { theme, colors } = useTheme();
@@ -52,9 +53,13 @@ const Workshops: React.FC = () => {
             className={`group relative ${theme === 'light' ? 'bg-white border-slate-200 hover:border-violet-400' : 'bg-slate-900 border-white/10 hover:border-violet-500/50'} rounded-3xl border overflow-hidden transition-all duration-300`}
           >
             <div className="flex flex-col lg:flex-row">
-              {/* Image Section */}
               <div className="lg:w-2/5 relative min-h-[300px] lg:min-h-full overflow-hidden">
-                <img src={workshop.image} alt={workshop.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <ImageWithSkeleton
+                  src={workshop.image}
+                  alt={workshop.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  containerClassName="absolute inset-0 w-full h-full"
+                />
                 <div className={`absolute inset-0 bg-gradient-to-t ${theme === 'light' ? 'from-white via-transparent' : 'from-slate-900 via-transparent'} to-transparent lg:bg-gradient-to-r lg:from-transparent ${theme === 'light' ? 'lg:to-white' : 'lg:to-slate-900'}`} />
                 <div className="absolute top-4 left-4 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-white text-sm font-medium border border-white/20">
                   {workshop.domain}
