@@ -119,7 +119,7 @@ const Workshops: React.FC = () => {
       <RegistrationModal
         isOpen={showRegModal}
         onClose={() => setShowRegModal(false)}
-        townscriptUrl={WORKSHOPS_TOWNSCRIPT_URL}
+        ticketTab="workshop"
       />
     </div>
   );

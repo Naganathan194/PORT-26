@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
+import { useSearchParams } from 'react-router-dom';
+import qrImg from '../assets/imgs/qr_img.jpg';
 
 const tabs = [
     {
@@ -16,9 +18,17 @@ const tabs = [
 ];
 
 const Tickets: React.FC = () => {
-    const [activeTab, setActiveTab] = useState(tabs[0].id);
+    const [searchParams] = useSearchParams();
+    const tabParam = searchParams.get('tab');
+    const [activeTab, setActiveTab] = useState(tabParam === 'events' ? 'events' : tabParam === 'workshop' ? 'workshop' : tabs[0].id);
     const activeSrc = tabs.find((t) => t.id === activeTab)!.src;
     const { theme, colors } = useTheme();
+
+    useEffect(() => {
+        if (tabParam === 'events' || tabParam === 'workshop') {
+            setActiveTab(tabParam);
+        }
+    }, [tabParam]);
 
     return (
         <section className={`relative min-h-screen ${colors.bgPrimary} pt-14 pb-24 px-4 overflow-hidden transition-colors duration-300`}>
@@ -39,22 +49,35 @@ const Tickets: React.FC = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="relative text-center mb-10"
+                className="relative flex flex-col md:flex-row items-center justify-center gap-8 mb-10"
             >
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className={`text-xs uppercase tracking-[0.3em] ${theme === 'light' ? 'text-violet-600' : 'text-violet-400'} mb-3`}
-                >
-                    🎫 Secure Your Spot
-                </motion.p>
-                <h1 className={`text-4xl sm:text-5xl font-extrabold ${colors.textPrimary} mb-3 transition-colors duration-300`}>
-                    Get Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Tickets</span>
-                </h1>
-                <p className={`${colors.textTertiary} text-sm max-w-md mx-auto transition-colors duration-300`}>
-                    Choose your experience below and book your pass for PORT'26
-                </p>
+                {/* Text */}
+                <div className="text-center md:text-right">
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className={`text-xs uppercase tracking-[0.3em] ${theme === 'light' ? 'text-violet-600' : 'text-violet-400'} mb-3`}
+                    >
+                        🎫 Secure Your Spot
+                    </motion.p>
+                    <h1 className={`text-4xl sm:text-5xl font-extrabold ${colors.textPrimary} mb-3 transition-colors duration-300`}>
+                        Get Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Tickets</span>
+                    </h1>
+                    <p className={`${colors.textTertiary} text-sm max-w-md transition-colors duration-300`}>
+                        Choose your experience below and book your pass for PORT'26
+                    </p>
+                </div>
+
+                {/* QR Image */}
+                <motion.img
+                    src={qrImg}
+                    alt="Registration QR Code"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3, duration: 0.5 }}
+                    className={`w-40 h-40 md:w-48 md:h-48 object-contain rounded-2xl border ${theme === 'light' ? 'border-slate-200 shadow-lg' : 'border-white/10 shadow-xl shadow-violet-900/20'}`}
+                />
             </motion.div>
 
             {/* Tabs */}

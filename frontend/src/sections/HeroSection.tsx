@@ -83,7 +83,7 @@ const HeroSection: React.FC = () => {
       <RegistrationModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        townscriptUrl={EVENTS_TOWNSCRIPT_URL}
+        ticketTab="workshop"
       />
     </section>
   );

@@ -53,7 +53,7 @@ const EventCardPreview: React.FC<EventCardPreviewProps> = ({ event }) => {
       <RegistrationModal
         isOpen={showRegModal}
         onClose={() => setShowRegModal(false)}
-        townscriptUrl={EVENTS_TOWNSCRIPT_URL}
+        ticketTab="events"
       />
     </motion.div>
   );

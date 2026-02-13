@@ -333,7 +333,7 @@ const Events: React.FC = () => {
       <RegistrationModal
         isOpen={showRegModal}
         onClose={() => setShowRegModal(false)}
-        townscriptUrl={EVENTS_TOWNSCRIPT_URL}
+        ticketTab="events"
       />
     </div>
   );

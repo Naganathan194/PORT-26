@@ -2,20 +2,22 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useNavigate } from 'react-router-dom';
 
 interface RegistrationModalProps {
     isOpen: boolean;
     onClose: () => void;
-    townscriptUrl: string;
+    ticketTab?: 'events' | 'workshop';
 }
 
-const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, townscriptUrl }) => {
+const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, ticketTab = 'events' }) => {
     const { theme, colors } = useTheme();
     const [accepted, setAccepted] = useState(false);
+    const navigate = useNavigate();
 
     const handleOk = () => {
         if (accepted) {
-            window.open(townscriptUrl, '_blank', 'noopener,noreferrer');
+            navigate(`/tickets?tab=${ticketTab}`);
             onClose();
             setAccepted(false);
         }
@@ -48,8 +50,8 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                         transition={{ duration: 0.3, ease: 'easeOut' }}
                         onClick={(e) => e.stopPropagation()}
                         className={`relative w-full max-w-lg rounded-2xl border shadow-2xl overflow-hidden ${theme === 'light'
-                                ? 'bg-white border-slate-200'
-                                : 'bg-slate-900 border-white/10'
+                            ? 'bg-white border-slate-200'
+                            : 'bg-slate-900 border-white/10'
                             }`}
                     >
                         {/* Header */}
@@ -61,8 +63,8 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                             <button
                                 onClick={handleClose}
                                 className={`p-1.5 rounded-lg transition-colors ${theme === 'light'
-                                        ? 'hover:bg-slate-100 text-slate-500'
-                                        : 'hover:bg-white/10 text-slate-400'
+                                    ? 'hover:bg-slate-100 text-slate-500'
+                                    : 'hover:bg-white/10 text-slate-400'
                                     }`}
                             >
                                 <X className="w-5 h-5" />
@@ -78,7 +80,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                                 </li>
                                 <li className="flex gap-2">
                                     <span className={`font-semibold ${colors.textPrimary} shrink-0`}>2.</span>
-                                    <span>Registration: <strong className={colors.textPrimary}>300 INR per person</strong>.</span>
+                                    <span>Registration: <strong className={colors.textPrimary}>350 INR per person</strong>.</span>
                                 </li>
                                 <li className="flex gap-2">
                                     <span className={`font-semibold ${colors.textPrimary} shrink-0`}>3.</span>
@@ -102,6 +104,11 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                                 </li>
                             </ol>
 
+                            {/* Payment description */}
+                            <div className={`mt-5 p-3.5 rounded-lg text-sm leading-relaxed ${theme === 'light' ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-amber-500/10 border border-amber-500/20 text-amber-300'}`}>
+                                <strong>💳 Payment:</strong> Pay using the QR code displayed on the Townscript page. After payment, enter your <strong>Transaction ID</strong> and upload a <strong>transaction screenshot</strong> on the same page. Your ticket will be issued once the payment is verified.
+                            </div>
+
                             {/* Terms checkbox */}
                             <label className={`flex items-center gap-2.5 mt-6 cursor-pointer select-none ${colors.textSecondary} text-sm`}>
                                 <input
@@ -121,12 +128,12 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                                 onClick={handleOk}
                                 disabled={!accepted}
                                 className={`px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ${accepted
-                                        ? theme === 'light'
-                                            ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-md hover:shadow-lg'
-                                            : 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-md hover:shadow-lg'
-                                        : theme === 'light'
-                                            ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                            : 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                                    ? theme === 'light'
+                                        ? 'bg-amber-600 hover:bg-amber-700 text-white shadow-md hover:shadow-lg'
+                                        : 'bg-amber-500 hover:bg-amber-400 text-slate-900 shadow-md hover:shadow-lg'
+                                    : theme === 'light'
+                                        ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                        : 'bg-slate-700 text-slate-500 cursor-not-allowed'
                                     }`}
                             >
                                 OK
