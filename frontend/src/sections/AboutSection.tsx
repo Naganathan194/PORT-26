@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Cpu, Award, Zap, Users, Wrench } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import logo1 from '../assets/imgs/logo1.jpeg';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
 
 const CATEGORY_BADGES = [
   { label: 'Technical', icon: Zap, gradient: 'from-cyan-500 to-blue-500' },
@@ -108,10 +109,11 @@ const AboutSection: React.FC = () => {
               className="relative"
             >
               <div className={`relative h-[400px] lg:h-[500px] w-full rounded-[2rem] border overflow-hidden ${theme === 'light' ? 'border-slate-300 bg-slate-100/60' : 'border-white/10 bg-slate-900/40'} backdrop-blur-sm transition-colors duration-300 flex items-center justify-center`}>
-                <img
+                <ImageWithSkeleton
                   src={logo1}
                   alt="PORT'26 Logo"
                   className="w-full h-full object-contain p-4"
+                  containerClassName="w-full h-full p-4"
                 />
               </div>
             </motion.div>

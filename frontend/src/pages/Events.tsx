@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { useTheme } from '../contexts/ThemeContext';
 import RegistrationModal from '../components/RegistrationModal';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
 
 // Load local images from src/assets/events if present (named by event id)
 const localEventImages: Record<string, string> = (() => {
@@ -117,7 +118,12 @@ const Events: React.FC = () => {
                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
-                    <img src={localEventImages[event.id] ?? event.image} alt={event.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <ImageWithSkeleton
+                      src={localEventImages[event.id] ?? event.image}
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      containerClassName="w-full h-full"
+                    />
                     <div className="absolute top-4 left-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${event.category === 'technical' ? 'bg-blue-600/90 text-white' : 'bg-pink-600/90 text-white'}`}>
                         {event.type}
@@ -244,7 +250,12 @@ const Events: React.FC = () => {
               <div className="overflow-y-auto flex-1 -mt-11">
                 {/* Modal Image */}
                 <div className="relative h-56 overflow-hidden rounded-t-2xl">
-                  <img src={selectedEvent.image} alt={selectedEvent.title} className="w-full h-full object-cover" />
+                  <ImageWithSkeleton
+                    src={selectedEvent.image}
+                    alt={selectedEvent.title}
+                    className="w-full h-full object-cover"
+                    containerClassName="w-full h-full"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   <div className="absolute bottom-4 left-6 right-6">
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 ${selectedEvent.category === 'technical' ? 'bg-blue-600/90 text-white' : 'bg-pink-600/90 text-white'
@@ -270,6 +281,47 @@ const Events: React.FC = () => {
                           {paragraph}
                         </p>
                       ))}
+                    </div>
+                  )}
+
+                  {/* Themes Section */}
+                  {selectedEvent.themes && selectedEvent.themes.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className={`text-lg font-serif font-bold ${colors.textPrimary} mb-3`}>Presentation Themes</h4>
+                      <div className={`rounded-xl p-5 ${theme === 'light' ? 'bg-slate-50 border border-slate-200' : 'bg-white/5 border border-white/10'}`}>
+                        <ul className="space-y-4">
+                          {selectedEvent.themes.map((themeItem, idx) => {
+                            // Extract domain from "Topic (Domain)" format
+                            const match = themeItem.match(/^(.*?)\s*\((.*?)\)$/);
+                            const topic = match ? match[1] : themeItem;
+                            const domain = match ? match[2] : null;
+
+                            // Get badge color based on domain
+                            const getBadgeColor = (d: string) => {
+                              const lower = d.toLowerCase();
+                              // All domains should use blue theme now
+                              if (lower.includes('ai') || lower.includes('ml') || lower.includes('software') || lower.includes('cyber')) {
+                                return theme === 'light' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                              }
+                              return theme === 'light' ? 'bg-slate-100 text-slate-700 border-slate-200' : 'bg-slate-700 text-slate-300 border-slate-600';
+                            };
+
+                            return (
+                              <li key={idx} className={`flex flex-col sm:flex-row sm:items-start justify-between gap-y-2 gap-x-4 ${colors.textTertiary} text-sm pb-3 border-b ${theme === 'light' ? 'border-slate-100' : 'border-white/5'} last:border-0 last:pb-0`}>
+                                <div className="flex items-start gap-3">
+                                  <span className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${theme === 'light' ? 'bg-violet-500' : 'bg-violet-400'}`} />
+                                  <span className={`font-medium leading-relaxed ${theme === 'light' ? 'text-slate-800' : 'text-slate-200'}`}>{topic}</span>
+                                </div>
+                                {domain && (
+                                  <span className={`flex-shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${getBadgeColor(domain)} ml-auto sm:ml-0 self-start sm:self-center`}>
+                                    {domain}
+                                  </span>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
                     </div>
                   )}
 

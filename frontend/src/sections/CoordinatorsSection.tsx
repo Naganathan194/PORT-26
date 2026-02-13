@@ -60,15 +60,20 @@ const CoordinatorsSection: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.08, duration: 0.4 }}
                 whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className={`group relative ${theme === 'light' ? 'bg-white/90 border-slate-200 hover:border-violet-300' : 'bg-white/5 border-white/10 hover:border-violet-500/30'} backdrop-blur-sm border rounded-2xl p-5 transition-all duration-300`}
+                className="group relative"
               >
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${theme === 'light' ? 'bg-violet-100 text-violet-700' : 'bg-violet-500/15 text-violet-400'} transition-colors duration-300`}>
-                    {member.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className={`font-bold ${colors.textPrimary} transition-colors duration-300`}>{member.name}</h4>
-                    <p className={`text-sm ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`}>{member.role}</p>
+                {/* Card Glow */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-2xl opacity-0 group-hover:opacity-15 blur-xl transition-all duration-500" />
+
+                <div className={`relative ${theme === 'light' ? 'bg-white/90 border-slate-200 hover:border-violet-300' : 'bg-white/5 border-white/10 hover:border-violet-500/30'} backdrop-blur-sm border rounded-2xl p-5 transition-all duration-300`}>
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold ${theme === 'light' ? 'bg-violet-100 text-violet-700' : 'bg-violet-500/15 text-violet-400'} transition-colors duration-300`}>
+                      {member.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className={`font-bold ${colors.textPrimary} transition-colors duration-300`}>{member.name}</h4>
+                      <p className={`text-sm ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`}>{member.role}</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>

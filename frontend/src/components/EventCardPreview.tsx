@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { Calendar, ArrowRight } from 'lucide-react';
 import type { Event } from '../types';
 import { useTheme } from '../contexts/ThemeContext';
-import RegistrationModal from './RegistrationModal';
+import { Link } from 'react-router-dom';
+import ImageWithSkeleton from './ImageWithSkeleton';
 
 // Load any local images placed in src/assets/events named like <id>.jpg/png/webp
 const localEventImages: Record<string, string> = (() => {
@@ -24,14 +24,18 @@ interface EventCardPreviewProps {
 
 const EventCardPreview: React.FC<EventCardPreviewProps> = ({ event }) => {
   const { theme } = useTheme();
-  const [showRegModal, setShowRegModal] = useState(false);
 
   return (
     <motion.div
       whileHover={{ y: -10 }}
       className="group relative overflow-hidden rounded-2xl aspect-[4/3] cursor-pointer"
     >
-      <img src={localEventImages[event.id] ?? event.image} alt={event.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+      <ImageWithSkeleton
+        src={localEventImages[event.id] ?? event.image}
+        alt={event.title}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        containerClassName="absolute inset-0 w-full h-full"
+      />
       <div className={`absolute inset-0 bg-gradient-to-t ${theme === 'light' ? 'from-white via-white/40' : 'from-slate-950 via-slate-950/40'} to-transparent opacity-90`} />
 
       <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -45,16 +49,10 @@ const EventCardPreview: React.FC<EventCardPreviewProps> = ({ event }) => {
           <Calendar className="w-4 h-4 mr-2" />
           {event.date}
         </div>
-        <button onClick={() => setShowRegModal(true)} className={`inline-flex items-center ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-medium text-sm group-hover:translate-x-2 transition-transform`}>
+        <Link to={`/events#${event.id}`} className={`inline-flex items-center ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-medium text-sm group-hover:translate-x-2 transition-transform`}>
           View Details <ArrowRight className="w-4 h-4 ml-2" />
-        </button>
+        </Link>
       </div>
-
-      <RegistrationModal
-        isOpen={showRegModal}
-        onClose={() => setShowRegModal(false)}
-        ticketTab="events"
-      />
     </motion.div>
   );
 };

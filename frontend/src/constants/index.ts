@@ -19,7 +19,15 @@ export const EVENTS: Event[] = [
     image: 'https://picsum.photos/seed/thinklink/800/600',
     status: 'open',
     difficulty: 'Intermediate',
-    price: 0
+    price: 0,
+    themes: [
+      'When Algorithms Get It Wrong: Famous AI Fails and Lessons Learned (AI)',
+      'Why "123456" Still Exists: Psychology Behind Bad Passwords (Cyber Security)',
+      'Debugging: The Art of Talking to a Computer That Doesn\'t Listen (Software Engineering)',
+      'From Calculator to Chatbot: Evolution of Thinking Machines (AI)',
+      'Can a Machine Be Creative or Is It Just Copy-Pasting Humanity? (ML)',
+      'Software That Scales vs Software That Survives (Software Engineering)'
+    ]
   },
   {
     id: 'evt-2',

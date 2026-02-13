@@ -4,6 +4,7 @@ import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { ChevronDown } from 'lucide-react';
 import Particles from '../components/Particles';
 import RegistrationModal from '../components/RegistrationModal';
+import ImageWithSkeleton from '../components/ImageWithSkeleton';
 import logo from '../assets/imgs/logo.png';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -17,10 +18,11 @@ const HeroSection: React.FC = () => {
     <section className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: 'calc(100vh - 80px)' }}>
       {/* Parallax Background - lowest layer */}
       <motion.div style={{ y: y1 }} className="absolute inset-0 z-0 pointer-events-none">
-        <img
+        <ImageWithSkeleton
           src="https://picsum.photos/seed/hero3/1920/1080"
           alt="Hero Background"
           className="w-full h-full object-cover opacity-20"
+          containerClassName="w-full h-full"
         />
         <div className={`absolute inset-0 bg-gradient-to-b ${theme === 'light' ? 'from-white/30 via-white/70 to-white' : 'from-slate-950/30 via-slate-950/70 to-slate-950'}`} />
       </motion.div>
@@ -51,14 +53,19 @@ const HeroSection: React.FC = () => {
             Sona College of Technology
           </h3>
           <div className="flex justify-center -my-8">
-            <motion.img
-              src={logo}
-              alt="PORT 26' Logo"
-              className="w-80 h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem] object-contain drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]"
+            <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-            />
+              className="w-80 h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem]"
+            >
+              <ImageWithSkeleton
+                src={logo}
+                alt="PORT 26' Logo"
+                className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]"
+                containerClassName="w-full h-full"
+              />
+            </motion.div>
           </div>
           <p className={`${theme === 'light' ? 'text-slate-700' : 'text-slate-300'} text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed`}>
             Where innovation meets excellence. Join us for the most prestigious technical and cultural symposium of the year.

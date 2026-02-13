@@ -14,6 +14,7 @@ export interface Event {
   price?: number;
   teamSize?: string;
   difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+  themes?: string[];
 }
 
 export interface Workshop {
