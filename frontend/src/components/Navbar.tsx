@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import logo from '../assets/imgs/logo.png';
+import logo1 from '../assets/imgs/logo1.jpeg';
 import { useTheme } from '../contexts/ThemeContext';
 
 const Navbar: React.FC = () => {
@@ -61,6 +62,14 @@ const Navbar: React.FC = () => {
                 )}
               </Link>
             ))}
+            <a
+              href={logo1}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`relative text-sm uppercase tracking-widest font-medium transition-colors duration-300 ${colors.textSecondary} ${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'}`}
+            >
+              Brochure
+            </a>
           </div>
         </div>
 
@@ -129,6 +138,22 @@ const Navbar: React.FC = () => {
                   </Link>
                 </motion.div>
               ))}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ delay: navLinks.length * 0.1, duration: 0.3 }}
+              >
+                <a
+                  href={logo1}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsOpen(false)}
+                  className={`block px-3 py-4 text-base font-medium transition-colors duration-300 border-b ${colors.border} ${colors.textSecondary} ${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'}`}
+                >
+                  Brochure
+                </a>
+              </motion.div>
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
