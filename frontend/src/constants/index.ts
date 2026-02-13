@@ -141,7 +141,7 @@ export const WORKSHOPS: Workshop[] = [
   {
     id: 'ws-1',
     title: 'HACKPROOFING THE FUTURE',
-    domain: 'Cybersecurity',
+    domain: 'Post-Quantum Cryptography',
     instructor: {
       name: 'Dr. V. Jayakumar',
       role: 'Workshop Organizer',
@@ -167,8 +167,8 @@ export const WORKSHOPS: Workshop[] = [
     },
     date: '05-03-2026',
     duration: 'Full Day',
-    description: 'Discover how to transform raw ideas into intelligent AI-powered solutions using Generative AI and advanced prompt engineering. This session dives into agentic AI systems that can reason, act, and build real-world products.',
-    learnings: ['Agentic AI, Generative AI & Prompt Engineering', 'Moving from writing prompts to creating intelligent, real-world AI products'],
+    description: 'Master the art of Prompt Engineering and explore the cutting-edge world of Agentic AI — including powerful concepts like Retrieval-Augmented Generation (RAG) and Model Context Protocol (MCP). This hands-on workshop takes you from crafting effective prompts to building a fully functional AI-powered product.',
+    learnings: ['Prompt Engineering techniques for precise, high-quality AI outputs', 'Agentic AI concepts — RAG (Retrieval-Augmented Generation) & MCP (Model Context Protocol)', 'Build a complete product using prompts — from idea to working prototype'],
     price: 0,
     spotsTotal: 50,
     spotsFilled: 0,

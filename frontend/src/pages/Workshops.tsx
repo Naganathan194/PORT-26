@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { WORKSHOPS } from '../constants';
 import { useLocation } from 'react-router-dom';
 import { WORKSHOPS_TOWNSCRIPT_URL } from '../constants';
 import { useTheme } from '../contexts/ThemeContext';
+import RegistrationModal from '../components/RegistrationModal';
 
 const Workshops: React.FC = () => {
   const { theme, colors } = useTheme();
   const location = useLocation();
+  const [showRegModal, setShowRegModal] = useState(false);
 
   useEffect(() => {
     const raw = window.location.hash || location.hash || '';
@@ -20,7 +22,7 @@ const Workshops: React.FC = () => {
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 50);
   }, [location.key, location.pathname, location.hash]);
-  
+
   return (
     <div className="min-h-screen pb-12">
       {/* Hero (match Events page header design) */}
@@ -78,7 +80,7 @@ const Workshops: React.FC = () => {
                 {/* Instructor */}
                 <div className={`flex items-center mb-8 p-4 ${theme === 'light' ? 'bg-slate-100 border-slate-200' : 'bg-white/5 border-white/5'} rounded-xl border transition-colors duration-300`}>
                   <div className="w-12 h-12 rounded-full border-2 border-violet-500 mr-4 bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-sm font-medium text-slate-700 dark:text-slate-200">
-                    {workshop.instructor.name.split(' ').map(n => n[0]).join('').slice(0,2)}
+                    {workshop.instructor.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                   </div>
                   <div>
                     <div className={`${colors.textPrimary} font-bold transition-colors duration-300`}>{workshop.instructor.name}</div>
@@ -104,15 +106,21 @@ const Workshops: React.FC = () => {
                     <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
                     Spots Available
                   </div>
-                  <a href={WORKSHOPS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`w-full sm:w-auto px-8 py-3 ${theme === 'light' ? 'bg-slate-900 hover:bg-amber-700' : 'bg-white hover:bg-amber-400'} ${theme === 'light' ? 'text-white' : 'text-slate-900'} font-bold rounded-lg transition-colors text-center`}>
+                  <button onClick={() => setShowRegModal(true)} className={`w-full sm:w-auto px-8 py-3 ${theme === 'light' ? 'bg-slate-900 hover:bg-amber-700' : 'bg-white hover:bg-amber-400'} ${theme === 'light' ? 'text-white' : 'text-slate-900'} font-bold rounded-lg transition-colors text-center`}>
                     Register Now
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
+
+      <RegistrationModal
+        isOpen={showRegModal}
+        onClose={() => setShowRegModal(false)}
+        ticketTab="workshop"
+      />
     </div>
   );
 };

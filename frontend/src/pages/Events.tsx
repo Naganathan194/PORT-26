@@ -6,6 +6,7 @@ import { Event } from '../types';
 import { useLocation } from 'react-router-dom';
 import { EVENTS_TOWNSCRIPT_URL } from '../constants';
 import { useTheme } from '../contexts/ThemeContext';
+import RegistrationModal from '../components/RegistrationModal';
 
 // Load local images from src/assets/events if present (named by event id)
 const localEventImages: Record<string, string> = (() => {
@@ -37,6 +38,7 @@ const Events: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'technical' | 'non-technical'>('all');
   const [search, setSearch] = useState('');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [showRegModal, setShowRegModal] = useState(false);
 
   let filteredEvents = EVENTS.filter(event => {
     const matchesFilter = filter === 'all' || event.category === filter;
@@ -175,9 +177,9 @@ const Events: React.FC = () => {
                           Registration Closed
                         </div>
                       ) : (
-                        <a href={EVENTS_TOWNSCRIPT_URL} target="_blank" rel="noopener noreferrer" className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 ${theme === 'light' ? 'bg-slate-100 hover:bg-violet-500 hover:text-white' : 'bg-white/5 hover:bg-violet-600 text-white'} hover:shadow-lg hover:shadow-violet-900/40`}>
+                        <button onClick={() => setShowRegModal(true)} className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 ${theme === 'light' ? 'bg-slate-100 hover:bg-violet-500 hover:text-white' : 'bg-white/5 hover:bg-violet-600 text-white'} hover:shadow-lg hover:shadow-violet-900/40`}>
                           Register Now
-                        </a>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -313,15 +315,13 @@ const Events: React.FC = () => {
                       Registration Closed
                     </div>
                   ) : (
-                    <a
-                      href={EVENTS_TOWNSCRIPT_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      onClick={() => setShowRegModal(true)}
                       className={`block w-full py-3 text-center rounded-xl font-medium transition-all duration-300 ${theme === 'light' ? 'bg-slate-100 hover:bg-violet-500 hover:text-white' : 'bg-white/5 hover:bg-violet-600 text-white'
                         } hover:shadow-lg hover:shadow-violet-900/40`}
                     >
                       Register Now
-                    </a>
+                    </button>
                   )}
                 </div>
               </div>
@@ -329,6 +329,12 @@ const Events: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <RegistrationModal
+        isOpen={showRegModal}
+        onClose={() => setShowRegModal(false)}
+        ticketTab="events"
+      />
     </div>
   );
 };
