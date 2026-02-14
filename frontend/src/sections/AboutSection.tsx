@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Award, Zap, Users, Wrench } from 'lucide-react';
+import { Cpu, Award, Zap, Users, Wrench, X } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import logo1 from '../assets/imgs/logo1.jpeg';
+import brochure from '../assets/imgs/brouchure.jpeg';
 import ImageWithSkeleton from '../components/ImageWithSkeleton';
 
 const CATEGORY_BADGES = [
@@ -13,6 +14,13 @@ const CATEGORY_BADGES = [
 
 const AboutSection: React.FC = () => {
   const { theme, colors } = useTheme();
+  const [showBrochure, setShowBrochure] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowBrochure(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <>
@@ -140,17 +148,16 @@ const AboutSection: React.FC = () => {
                 PORT'26 is a national-level technical symposium organised entirely by the students of the Department of Information Technology. Designed to ignite innovation and celebrate technology, it brings together bright minds from across the country to compete, collaborate, and learn.
               </p>
               <p className={`${colors.textTertiary} leading-relaxed font-light text-justify transition-colors duration-300 mb-4`}>
-                The symposium features a diverse lineup spanning Technical events that test problem-solving prowess, Non-Technical events that spark creativity and teamwork, and hands-on Workshops led by industry experts. From AI-driven hackathons to fun-filled gaming showdowns, PORT'26 offers something for every tech enthusiast — all powered by the passion and energy of current students.<a
-                  href={logo1}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                The symposium features a diverse lineup spanning Technical events that test problem-solving prowess, Non-Technical events that spark creativity and teamwork, and hands-on Workshops led by industry experts. From AI-driven hackathons to fun-filled gaming showdowns, PORT'26 offers something for every tech enthusiast — all powered by the passion and energy of current students.
+                <button
+                  onClick={() => setShowBrochure(true)}
                   className={`inline-flex items-center gap-1 mx-4 mb-8 font-semibold text-sm transition-colors duration-300 ${theme === 'light'
                     ? 'text-amber-700 hover:text-amber-800'
                     : 'text-amber-400 hover:text-amber-300'
                     }`}
                 >
                   View Brochure →
-                </a>
+                </button>
 
               </p>
 
@@ -180,6 +187,39 @@ const AboutSection: React.FC = () => {
           </div>
         </div>
       </section>
+      {/* Brochure Modal */}
+      {showBrochure && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setShowBrochure(false)}
+          />
+
+          <div
+            className="relative z-50 max-w-[95%] max-h-[95%] mx-auto p-4 flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={`relative w-full max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden border shadow-2xl ${theme === 'light' ? 'bg-white border-slate-200' : 'bg-slate-900 border-white/10'}`}>
+              <button
+                aria-label="Close brochure"
+                onClick={() => setShowBrochure(false)}
+                className={`absolute top-3 right-3 z-50 p-2 rounded-full ${theme === 'light' ? 'bg-white/90' : 'bg-slate-800/80'} shadow`}
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="p-4 flex items-center justify-center overflow-auto">
+                <ImageWithSkeleton
+                  src={brochure}
+                  alt="PORT'26 Brochure"
+                  className="max-h-[80vh] w-auto max-w-full object-contain"
+                  containerClassName="w-full flex items-center justify-center"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

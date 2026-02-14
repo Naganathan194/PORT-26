@@ -9,6 +9,8 @@ const CoordinatorsSection: React.FC = () => {
 
   const faculty = COORDINATORS.filter(c => c.type === 'faculty');
   const students = COORDINATORS.filter(c => c.type === 'student');
+  const lead = faculty[0];
+  const otherFaculty = faculty.slice(1);
 
   return (
     <section className={`py-32 ${theme === 'light' ? 'bg-gradient-to-b from-slate-50 via-slate-100 to-slate-50' : 'bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950'} relative overflow-hidden transition-colors duration-300`}>
@@ -52,8 +54,28 @@ const CoordinatorsSection: React.FC = () => {
             </div>
             <h3 className={`text-2xl font-serif font-bold ${colors.textPrimary} transition-colors duration-300`}>Faculty Coordinators</h3>
           </div>
+          {/* Featured lead (centered) */}
+          {lead && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="max-w-md mx-auto mb-6"
+            >
+              <div className={`relative ${theme === 'light' ? 'bg-white/95 border-slate-200' : 'bg-white/6 border-white/10'} backdrop-blur-sm border rounded-3xl p-6 text-center transition-all duration-300`}>
+                <div className="flex items-center justify-center mb-3">
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold ${theme === 'light' ? 'bg-violet-100 text-violet-700' : 'bg-violet-500/15 text-violet-400'} transition-colors duration-300`}>
+                    {lead.name.charAt(0)}
+                  </div>
+                </div>
+                <h4 className={`text-xl font-bold ${colors.textPrimary} transition-colors duration-300`}>{lead.name}</h4>
+                <p className={`text-sm ${theme === 'light' ? 'text-amber-700' : 'text-amber-400'}`}>{lead.role}</p>
+              </div>
+            </motion.div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {faculty.map((member, idx) => (
+            {otherFaculty.map((member, idx) => (
               <motion.div
                 key={member.id}
                 initial={{ opacity: 0, y: 20 }}

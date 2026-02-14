@@ -92,7 +92,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
                                 </li>
                                 <li className="flex gap-2">
                                     <span className={`font-semibold shrink-0`}>5.</span>
-                                    <span className="font-medium">lunch and refreshment will be provided</span>
+                                    <span className="font-medium">Lunch and Refreshment will be provided</span>
                                 </li>
                                 <li className="flex gap-2">
                                     <span className={`font-semibold ${colors.textPrimary} shrink-0`}>6.</span>

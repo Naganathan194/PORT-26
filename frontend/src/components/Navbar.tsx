@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, Instagram } from 'lucide-react';
 import logo from '../assets/imgs/logo.png';
 import logo1 from '../assets/imgs/logo1.jpeg';
 import { useTheme } from '../contexts/ThemeContext';
@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`sticky top-0 w-full z-50 ${colors.bgPrimary} border-b ${colors.border} py-4 shadow-lg transition-colors duration-300`}>
+    <nav className={`fixed top-0 left-0 right-0 w-full z-50 ${colors.bgPrimary} border-b ${colors.border} py-4 shadow-lg transition-colors duration-300`}>
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-2 group">
           <img src={logo} alt="Logo" className="w-14 h-14 object-contain" />
@@ -73,8 +73,17 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Theme Toggle & Get Tickets - Right */}
+        {/* Instagram, Theme Toggle & Get Tickets - Right */}
         <div className="hidden md:flex items-center space-x-4">
+          <a
+            href="https://www.instagram.com/sona_it_ads_page/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-2 ${colors.textSecondary} ${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors duration-300`}
+          >
+            <Instagram className="w-5 h-5" />
+            <span className="text-sm font-medium">@sona_it_ads_page</span>
+          </a>
           <button
             onClick={toggleTheme}
             className={`p-2 rounded-full ${colors.bgSecondary} ${colors.textPrimary} hover:scale-110 transition-all duration-300 shadow-md`}
@@ -107,7 +116,7 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+              <motion.div
             initial={{ opacity: 0, height: 0, y: -20 }}
             animate={{ opacity: 1, height: 'auto', y: 0 }}
             exit={{ opacity: 0, height: 0, y: -20 }}
@@ -115,6 +124,12 @@ const Navbar: React.FC = () => {
             className={`md:hidden ${colors.bgPrimary} border-b ${colors.border} overflow-hidden transition-colors duration-300`}
           >
             <div className="px-4 pt-2 pb-3 space-y-1">
+                <div className="flex items-center justify-start gap-3 px-3 py-2">
+                  <Instagram className="w-5 h-5" />
+                  <a href="https://instagram.com/port_2026" target="_blank" rel="noopener noreferrer" className="text-sm font-medium">
+                    @port_2026
+                  </a>
+                </div>
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.name}

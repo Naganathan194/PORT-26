@@ -25,7 +25,7 @@ const Workshops: React.FC = () => {
   }, [location.key, location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen pb-12">
+    <div className="min-h-screen pb-12 mt-16">
       {/* Hero (match Events page header design) */}
       <div className={`${theme === 'light' ? 'bg-gradient-to-b from-slate-100 to-slate-50' : 'bg-gradient-to-b from-slate-900 to-slate-950'} py-16 border-b ${colors.border} transition-colors duration-300`}>
         <div className="max-w-8xl mx-auto px-4 text-center">

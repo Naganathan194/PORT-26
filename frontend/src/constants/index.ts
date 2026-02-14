@@ -15,7 +15,6 @@ export const EVENTS: Event[] = [
     teamCount: '1',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/thinklink/800/600',
     status: 'open',
     difficulty: 'Intermediate',
@@ -39,7 +38,6 @@ export const EVENTS: Event[] = [
     teamCount: '2',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/aiforge/800/600',
     status: 'open',
     difficulty: 'Advanced',
@@ -56,7 +54,6 @@ export const EVENTS: Event[] = [
     teamCount: '2',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/twominds/800/600',
     status: 'open',
     difficulty: 'Intermediate',
@@ -73,7 +70,6 @@ export const EVENTS: Event[] = [
     teamCount: '2',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/mindsprint/800/600',
     status: 'open',
     difficulty: 'Intermediate',
@@ -90,7 +86,6 @@ export const EVENTS: Event[] = [
     teamCount: '1 or 2',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/fifashowdown/800/600',
     status: 'open',
     price: 0,
@@ -106,7 +101,6 @@ export const EVENTS: Event[] = [
     teamCount: '4',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/searchshades/800/600',
     status: 'open',
     price: 0,
@@ -122,7 +116,6 @@ export const EVENTS: Event[] = [
     teamCount: '2',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/funfiesta/800/600',
     status: 'open',
     price: 0,
@@ -138,7 +131,6 @@ export const EVENTS: Event[] = [
     teamCount: '1',
     date: '06-03-2026',
     time: 'TBA',
-    venue: 'TBA',
     image: 'https://picsum.photos/seed/genaurora/800/600',
     status: 'open',
     price: 0
@@ -222,6 +214,12 @@ export const WORKSHOPS: Workshop[] = [
 
 export const COORDINATORS: Coordinator[] = [
   // Faculty Coordinators
+  {
+    id: 'f-0',
+    name: 'Dr. P. Shanmugaraja',
+    role: 'Faculty Coordinator',
+    type: 'faculty',
+  },
   {
     id: 'f-1',
     name: 'Mr. B. Mohanraj',

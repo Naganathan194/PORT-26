@@ -8,7 +8,7 @@ export interface Event {
   teamCount?: string;
   date: string;
   time: string;
-  venue: string;
+  venue?: string;
   image: string;
   status: 'open' | 'filling-fast' | 'closed';
   price?: number;

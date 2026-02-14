@@ -46,18 +46,18 @@ const HeroSection: React.FC = () => {
 
       <div className="relative z-10 max-w-8xl mx-auto px-4 text-center mt-8">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="pb-20">
-          <h2 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-medium tracking-[0.2em] uppercase text-sm md:text-base underline underline-offset-4`}>
+          <h2 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-bold tracking-[0.2em] uppercase text-sm md:text-base underline underline-offset-4`}>
             March 5-6, 2026
           </h2>
-          <h3 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-medium tracking-[0.15em] uppercase text-sm md:text-base mt-2 underline underline-offset-4`}>
+          <h3 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-bold tracking-[0.15em] uppercase text-sm md:text-base mt-2 underline underline-offset-4`}>
             Sona College of Technology
           </h3>
-          <div className="flex justify-center -my-8">
+          <div className="flex justify-center -my-20">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="w-80 h-80 md:w-96 md:h-96 lg:w-[28rem] lg:h-[28rem]"
+              className="w-96 h-96 md:w-[34rem] md:h-[34rem] lg:w-[40rem] lg:h-[40rem]"
             >
               <ImageWithSkeleton
                 src={logo}

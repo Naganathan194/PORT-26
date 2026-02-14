@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, MapPin, Filter, Search, X, Users, Sparkles, Ticket } from 'lucide-react';
+import { Calendar, Filter, Search, X, Users, Sparkles, Ticket } from 'lucide-react';
 import { EVENTS } from '../constants';
 import { Event } from '../types';
 import { useLocation } from 'react-router-dom';
@@ -52,13 +52,13 @@ const Events: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen pb-12">
+    <div className="min-h-screen pb-12 mt-10">
       {/* Header */}
       <div className={`${theme === 'light' ? 'bg-gradient-to-b from-slate-100 to-slate-50' : 'bg-gradient-to-b from-slate-900 to-slate-950'} pb-16 pt-24 border-b ${colors.border} transition-colors duration-300 relative overflow-hidden`}>
         {/* Animated Pricing Banner */}
-        <div className="absolute top-0 left-0 right-0 z-10">
+        <div className="absolute top-16 left-0 right-0 z-10">
           <div className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-amber-500 text-white py-2">
-            <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-2 overflow-hidden">
+            <div className="w-full flex items-center justify-start overflow-hidden">
               <motion.div
                 animate={{ x: ['0%', '-50%'] }}
                 transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
@@ -153,7 +153,8 @@ const Events: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.3 }}
-                  className={`${theme === 'light' ? 'bg-white border-slate-200 hover:border-violet-400' : 'bg-slate-900 border-white/5 hover:border-violet-500/30'} rounded-2xl border overflow-hidden transition-colors group flex flex-col h-full`}
+                  onClick={() => setSelectedEvent({ ...event, image: localEventImages[event.id] ?? event.image })}
+                  className={`${theme === 'light' ? 'bg-white border-slate-200 hover:border-violet-400' : 'bg-slate-900 border-white/5 hover:border-violet-500/30'} rounded-2xl border overflow-hidden transition-colors group flex flex-col h-full cursor-pointer`}
                 >
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
@@ -183,24 +184,21 @@ const Events: React.FC = () => {
                         {event.description}
                       </p>
                       {event.detailedDescription && (
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setSelectedEvent(event); }}
-                          className={`mt-2 text-xs font-semibold tracking-wide ${theme === 'light' ? 'text-violet-600 hover:text-amber-700' : 'text-violet-500 hover:text-amber-300'} transition-colors`}
-                        >
-                          + Read more
-                        </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setSelectedEvent({ ...event, image: localEventImages[event.id] ?? event.image }); }}
+                            className={`mt-2 text-xs font-semibold tracking-wide ${theme === 'light' ? 'text-violet-600 hover:text-amber-700' : 'text-violet-500 hover:text-amber-300'} transition-colors`}
+                          >
+                            + Read more
+                          </button>
                       )}
                     </div>
 
                     <div className="space-y-2 mb-6">
                       <div className={`flex items-center ${colors.textTertiary} text-sm`}>
                         <Calendar className={`w-4 h-4 mr-2 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'}`} />
-                        {event.date} • {event.time}
+                        {event.date}
                       </div>
-                      <div className={`flex items-center ${colors.textTertiary} text-sm`}>
-                        <MapPin className={`w-4 h-4 mr-2 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'}`} />
-                        {event.venue}
-                      </div>
+                      {/* venue removed per request */}
                       {event.teamSize && (
                         <div className={`flex items-center ${colors.textTertiary} text-sm`}>
                           <Users className={`w-4 h-4 mr-2 ${theme === 'light' ? 'text-violet-600' : 'text-violet-500'}`} />
@@ -367,13 +365,7 @@ const Events: React.FC = () => {
                         <p className={`text-sm font-medium ${colors.textPrimary}`}>{selectedEvent.date}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className={`w-4 h-4 ${theme === 'light' ? 'text-violet-600' : 'text-violet-400'}`} />
-                      <div>
-                        <p className={`text-xs ${colors.textTertiary}`}>Venue</p>
-                        <p className={`text-sm font-medium ${colors.textPrimary}`}>{selectedEvent.venue}</p>
-                      </div>
-                    </div>
+                    {/* Venue removed from modal per request */}
                     {selectedEvent.teamSize && (
                       <div className="flex items-center gap-2">
                         <Users className={`w-4 h-4 ${theme === 'light' ? 'text-violet-600' : 'text-violet-400'}`} />
