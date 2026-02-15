@@ -98,7 +98,6 @@ const Navbar: React.FC = () => {
             className={`flex items-center gap-2 ${colors.textSecondary} ${theme === 'light' ? 'hover:text-amber-600' : 'hover:text-amber-400'} transition-colors duration-300`}
           >
             <Instagram className="w-5 h-5" />
-            <span className="hidden xl:block text-sm font-medium">@sona_it_ads_page</span>
           </a>
           <button
             onClick={toggleTheme}
@@ -142,9 +141,6 @@ const Navbar: React.FC = () => {
             <div className="px-4 pt-2 pb-3 space-y-1">
               <div className="flex items-center justify-start gap-3 px-3 py-2">
                 <Instagram className="w-5 h-5" />
-                <a href="https://www.instagram.com/sona_it_ads_page/" target="_blank" rel="noopener noreferrer" className="text-sm font-medium">
-                  @sona_it_ads_page
-                </a>
               </div>
               {navLinks.map((link, index) => (
                 <motion.div

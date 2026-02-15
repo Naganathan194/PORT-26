@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { EVENTS_TOWNSCRIPT_URL } from '../constants';
-import { ChevronDown } from 'lucide-react';
 import Particles from '../components/Particles';
 import RegistrationModal from '../components/RegistrationModal';
 import ImageWithSkeleton from '../components/ImageWithSkeleton';
@@ -15,7 +13,7 @@ const HeroSection: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <section className="relative flex items-center justify-center overflow-hidden pt-20" style={{ minHeight: 'calc(100vh - 80px)' }}>
+    <section className="mt-16 relative flex items-center justify-center overflow-hidden pt-20" style={{ minHeight: 'calc(100vh - 80px)' }}>
       {/* Parallax Background - lowest layer */}
       <motion.div style={{ y: y1 }} className="absolute inset-0 z-0 pointer-events-none">
         <ImageWithSkeleton
@@ -52,12 +50,12 @@ const HeroSection: React.FC = () => {
           <h3 className={`${theme === 'light' ? 'text-amber-700' : 'text-amber-400'} font-bold tracking-[0.15em] uppercase text-sm md:text-base mt-2 underline underline-offset-4`}>
             Sona College of Technology
           </h3>
-          <div className="flex justify-center -my-8">
+          <div className="flex justify-center -my-4 md:-my-8 lg:-my-12">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="w-56 h-56 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]"
+              className="w-84 h-84 md:w-96 md:h-96 lg:w-[32rem] lg:h-[32rem]"
             >
               <ImageWithSkeleton
                 src={logo}
@@ -67,7 +65,7 @@ const HeroSection: React.FC = () => {
               />
             </motion.div>
           </div>
-          <p className={`${theme === 'light' ? 'text-slate-700' : 'text-slate-300'} text-base md:text-lg max-w-2xl mx-auto mb-6 font-light leading-relaxed`}>
+          <p className={`${theme === 'light' ? 'text-slate-700' : 'text-slate-300'} text-base md:text-lg max-w-2xl mx-auto mb-6 mt-0 md:-mt-4 lg:-mt-6 font-light leading-relaxed`}>
             Where innovation meets excellence. Join us for the most prestigious technical and cultural symposium of the year.
           </p>
 
