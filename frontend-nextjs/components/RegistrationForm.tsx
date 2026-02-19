@@ -263,7 +263,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         className="w-full max-w-2xl my-8 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-y-auto max-h-[90vh]"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-6 text-white flex justify-between items-center">
+        <div className="sticky top-0 bg-linear-to-r from-violet-600 to-indigo-600 px-6 py-6 text-white flex justify-between items-center">
           <h2 className="text-2xl font-bold">{workshopName}</h2>
           <button
             onClick={onClose}
@@ -488,7 +488,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Registering...' : 'Register Now'}
             </button>
