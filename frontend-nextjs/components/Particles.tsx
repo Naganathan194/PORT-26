@@ -14,6 +14,7 @@ interface ParticlesProps {
   sizeRandomness?: number;
   cameraDistance?: number;
   disableRotation?: boolean;
+  showConnections?: boolean;
   className?: string;
 }
 
@@ -39,6 +40,7 @@ const Particles: React.FC<ParticlesProps> = ({
   sizeRandomness = 0.5,
   cameraDistance = 20,
   disableRotation = false,
+  showConnections = false,
   className = ''
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -129,20 +131,22 @@ const Particles: React.FC<ParticlesProps> = ({
       ctx.globalAlpha = 1;
 
       // Draw connections between nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      if (showConnections) {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 200) {
-            ctx.strokeStyle = particleColors[0];
-            ctx.globalAlpha = (1 - distance / 200) * 0.2;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
+            if (distance < 200) {
+              ctx.strokeStyle = particleColors[0];
+              ctx.globalAlpha = (1 - distance / 200) * 0.2;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
           }
         }
       }

@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
       {/* Parallax Background - lowest layer */}
       <motion.div style={{ y: y1 }} className="absolute inset-0 z-0 pointer-events-none">
         <ImageWithSkeleton
-          src="/assets/imgs/brouchure_port.png"
+          src="https://picsum.photos/seed/hero3/1920/1080"
           alt="Hero Background"
           className="w-full h-full object-cover opacity-50"
           containerClassName="w-full h-full"
@@ -29,17 +29,14 @@ const HeroSection: React.FC = () => {
       {/* Particles Animation - above background */}
       <div className="absolute inset-0 z-[1]">
         <Particles
-          particleCount={800}
-          particleSpread={10}
-          speed={0.1}
-          particleColors={['#ffffff', '#aa99ff']}
-          moveParticlesOnHover={true}
-          particleHoverFactor={1}
+          particleCount={150}
+          speed={0.3}
+          particleColors={['#ffffff', '#e2e8f0']}
+          moveParticlesOnHover={false}
           alphaParticles={true}
-          particleBaseSize={150}
+          particleBaseSize={1.5}
           sizeRandomness={1}
-          cameraDistance={20}
-          disableRotation={false}
+          showConnections={false}
         />
       </div>
 
