@@ -1,0 +1,90 @@
+export const WORKSHOPS = [
+  {
+    id: 'hackproofing',
+    title: 'HACKPROOFING THE FUTURE',
+    domain: 'Post-Quantum Cryptography',
+    instructor: {
+      name: 'Dr. V. Jayakumar',
+      role: 'Workshop Organizer',
+    },
+    date: '05-03-2026',
+    duration: 'Full Day',
+    description: 'As quantum computing advances, this workshop explores the unprecedented risks to today\'s encryption methods. Participants will discover how Post-Quantum Cryptography is shaping the future of secure communication against these threats.',
+    learnings: [
+      'Post-quantum cryptography in practice',
+      'Quantum-resistant algorithms and their real-world implications',
+      'Understanding the next era of cybersecurity',
+    ],
+    price: 350,
+    spotsTotal: 50,
+    spotsFilled: 0,
+  },
+  {
+    id: 'prompt-to-product',
+    title: 'PROMPT TO PRODUCT',
+    domain: 'Artificial Intelligence',
+    instructor: {
+      name: 'Vishal',
+      role: 'Workshop Organizer',
+    },
+    date: '05-03-2026',
+    duration: 'Full Day',
+    description: 'Master the art of Prompt Engineering and explore the cutting-edge world of Agentic AI — including powerful concepts like Retrieval-Augmented Generation (RAG) and Model Context Protocol (MCP). This hands-on workshop takes you from crafting effective prompts to building a fully functional AI-powered product.',
+    learnings: [
+      'Prompt Engineering techniques for precise, high-quality AI outputs',
+      'Agentic AI concepts — RAG (Retrieval-Augmented Generation) & MCP (Model Context Protocol)',
+      'Build a complete product using prompts — from idea to working prototype',
+    ],
+    price: 350,
+    spotsTotal: 50,
+    spotsFilled: 0,
+  },
+  {
+    id: 'full-stack-fusion',
+    title: 'FULL STACK FUSION',
+    domain: 'Web Development',
+    instructor: {
+      name: 'Thiganth Kannadasan',
+      role: 'Workshop Organizer',
+    },
+    date: '05-03-2026',
+    duration: 'Full Day',
+    description: 'A hands-on introduction to Full Stack Web Development using the MERN stack (MongoDB, Express.js, React.js, and Node.js). Participants will learn to design scalable backend systems, build responsive frontend interfaces, and deploy complete applications.',
+    learnings: [
+      'Integrating modern UI frameworks like Tailwind CSS and daisyUI with robust backend practices',
+      'CORS management, file optimization, and cloud deployment using Render',
+      'Practical experience in building secure, scalable, and high-performance web applications',
+    ],
+    price: 350,
+    spotsTotal: 50,
+    spotsFilled: 0,
+  },
+  {
+    id: 'learn-how-to-think',
+    title: 'LEARN HOW TO THINK, NOT TO CODE',
+    domain: 'Problem Solving',
+    instructor: {
+      name: 'Gows Maithine A',
+      role: 'Workshop Organizer',
+    },
+    date: '05-03-2026',
+    duration: 'Full Day',
+    description: 'A guide from Programming Styles to Dynamic Programming that encourages students to stop memorizing solutions and start thinking like problem solvers. We break down how to analyze problems and craft efficient solutions step-by-step instead of jumping straight into syntax.',
+    learnings: [
+      'The confidence to face unseen problems without panic',
+      'Going beyond syntax to understand how great programmers think',
+      'Analyzing problems, exploring different approaches, and crafting efficient solutions',
+    ],
+    price: 350,
+    spotsTotal: 50,
+    spotsFilled: 0,
+  },
+];
+
+export const PORT_PASS = {
+  id: 'port-pass',
+  title: 'PORT PASS - DAY 2 EVENT',
+  description: 'Access all Day 2 events with the PORT Pass. Enjoy unlimited access to technical and non-technical events.',
+  date: '06-03-2026',
+  price: 350,
+};

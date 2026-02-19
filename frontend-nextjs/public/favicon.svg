@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" fill="#1e293b" rx="6"/>
+  
+  <!-- PORT text -->
+  <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fbbf24" text-anchor="middle">P</text>
+  
+  <!-- Decorative tech elements -->
+  <circle cx="8" cy="8" r="2" fill="#fbbf24" opacity="0.8"/>
+  <circle cx="24" cy="8" r="2" fill="#fbbf24" opacity="0.8"/>
+  <line x1="5" y1="12" x2="27" y2="12" stroke="#fbbf24" stroke-width="1.5" opacity="0.6"/>
+</svg>
