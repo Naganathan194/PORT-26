@@ -18,6 +18,45 @@ function TicketsContent() {
   const [activeTab, setActiveTab] = useState<TabType>('workshops');
   const [selectedWorkshop, setSelectedWorkshop] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const TOTAL_SEATS = 120;
+
+  const fetchCounts = async () => {
+    try {
+      const map: Record<string, number> = {};
+      await Promise.all(WORKSHOPS.map(async (w) => {
+        try {
+          const res = await fetch(`/api/workshops/${w.id}?count=true`);
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data && typeof data.count === 'number') map[w.id] = data.count;
+        } catch (e) { /* ignore */ }
+      }));
+      setCounts(map);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+    const t = setInterval(fetchCounts, 15000);
+    return () => clearInterval(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      const bc = new BroadcastChannel('registrations');
+      bc.onmessage = () => { fetchCounts(); };
+      return () => bc.close();
+    }
+    // fallback: listen to storage events
+    const onStorage = (e: StorageEvent) => { if (e.key === 'registration:updated') fetchCounts(); };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle URL parameters to set initial tab
   useEffect(() => {
@@ -212,6 +251,9 @@ function TicketsContent() {
                       <p className={`${colors.textTertiary} text-sm line-clamp-2`}>
                         {workshop.description}
                       </p>
+                      <div className="text-sm text-slate-400 mt-2">
+                        Remaining: {counts[workshop.id] === undefined ? 'Loading…' : Math.max(0, TOTAL_SEATS - counts[workshop.id])} / {TOTAL_SEATS}
+                      </div>
                       <div className={`mt-3 flex flex-wrap gap-4 text-xs ${colors.textTertiary}`}>
                         <span>📅 {workshop.date}</span>
                         <span>⏱️ {workshop.duration}</span>

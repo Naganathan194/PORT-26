@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { X, CreditCard, Paperclip } from 'lucide-react';
 
 interface RegistrationFormProps {
   workshopId: string;
@@ -188,6 +189,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         toast.success(`Successfully registered for ${workshopName}!`, { id: toastId, duration: 4000 });
         setFormData(EMPTY_FORM);
         setScreenshotPreview('');
+        try {
+          // notify other tabs/components about updated registrations
+          const bc = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('registrations') : null;
+          bc?.postMessage({ workshopId, action: 'registered' });
+        } catch (e) {
+          // ignore
+        }
         setTimeout(() => { onSuccess?.(); }, 2000);
       } else {
         // Handle specific error messages from backend
@@ -335,7 +343,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
           {/* Row 4: UPI Payment (UPI only) */}
           <div className="rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 p-4 space-y-4">
             <p className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
-              <span>💳</span> Payment — UPI Only
+              <CreditCard className="w-4 h-4" /> Payment — UPI Only
             </p>
 
             {/* Transaction ID */}
@@ -367,7 +375,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     className="max-h-40 rounded-lg object-contain" />
                 ) : (
                   <>
-                    <span className="text-3xl">📎</span>
+                    <Paperclip className="text-3xl w-8 h-8" />
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       Click to upload payment screenshot
                     </span>

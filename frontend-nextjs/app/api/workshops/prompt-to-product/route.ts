@@ -1,10 +1,14 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { PromptToProductRegistration } from '@/models/Registration';
-import { checkDuplicateRegistration, saveRegistration } from '@/lib/registrationUtils';
+import { checkDuplicateRegistration, saveRegistration, getRegistrationCount } from '@/lib/registrationUtils';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    if (searchParams.get('count') === 'true') {
+      const cnt = await getRegistrationCount(PromptToProductRegistration);
+      return NextResponse.json(cnt);
+    }
     const email = searchParams.get('email');
     const phone = searchParams.get('phone');
     if (!email || !phone) {

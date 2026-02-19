@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { WORKSHOPS } from '@/constants';
@@ -12,6 +12,50 @@ import ImageWithSkeleton from '@/components/ImageWithSkeleton';
 const Workshops: React.FC = () => {
   const { theme, colors } = useTheme();
   const [showRegModal, setShowRegModal] = useState(false);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const TOTAL_SEATS = 120;
+
+  const fetchCounts = async () => {
+    try {
+      const map: Record<string, number> = {};
+      await Promise.all(WORKSHOPS.map(async (w) => {
+        try {
+          const res = await fetch(`/api/workshops/${w.id}?count=true`);
+          if (!res.ok) return;
+          const data = await res.json();
+          if (data && typeof data.count === 'number') map[w.id] = data.count;
+        } catch (e) { /* ignore */ }
+      }));
+      setCounts(map);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts();
+    const t = setInterval(fetchCounts, 15000);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    // Listen for registration updates via BroadcastChannel or storage event
+    const onUpdate = () => fetchCounts();
+    if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+      const bc = new BroadcastChannel('registrations');
+      bc.onmessage = onUpdate;
+      return () => bc.close();
+    }
+    const onStorage = (e: StorageEvent) => { if (e.key === 'registration:updated') onUpdate(); };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener('registration:updated', onUpdate as EventListener);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener('registration:updated', onUpdate as EventListener);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen pb-12 mt-16">
@@ -96,10 +140,11 @@ const Workshops: React.FC = () => {
                 </div>
 
                 <div className={`mt-auto flex flex-col sm:flex-row items-center justify-between gap-6 border-t ${colors.border} pt-8`}>
-                  <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${theme === 'light' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
-                    <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                    Spots Available
-                  </div>
+                    <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${theme === 'light' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+                      <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                      Spots Available
+                      <span className="ml-3 text-sm text-slate-600 dark:text-slate-300">{counts[workshop.id] === undefined ? 'Loading…' : `${Math.max(0, TOTAL_SEATS - counts[workshop.id])} / ${TOTAL_SEATS} remaining`}</span>
+                    </div>
                   <button onClick={() => setShowRegModal(true)} className={`w-full sm:w-auto px-8 py-3 ${theme === 'light' ? 'bg-slate-900 hover:bg-amber-700' : 'bg-white hover:bg-amber-400'} ${theme === 'light' ? 'text-white' : 'text-slate-900'} font-bold rounded-lg transition-colors text-center`}>
                     Register Now
                   </button>
@@ -115,6 +160,16 @@ const Workshops: React.FC = () => {
         onClose={() => setShowRegModal(false)}
         ticketTab="workshops"
       />
+
+      <script suppressHydrationWarning>
+        {`(function(){
+          try{if('BroadcastChannel' in window){
+            var bc=new BroadcastChannel('registrations');
+            bc.onmessage=function(){window.dispatchEvent(new Event('registration:updated'))}
+          } else { window.addEventListener('storage', function(e){ if(e.key==='registration:updated') window.dispatchEvent(new Event('registration:updated')) }) }
+          }catch(e){}
+        })()`}
+      </script>
     </div>
   );
 };

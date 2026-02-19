@@ -15,6 +15,13 @@ const ALL_COLLECTIONS = [
   { model: PortPassRegistration,         eventName: 'Port Pass' },
 ];
 
+const WORKSHOP_MODEL_NAMES = new Set([
+  'HackproofingRegistration',
+  'PromptToProductRegistration',
+  'FullStackFusionRegistration',
+  'LearnHowToThinkRegistration',
+]);
+
 export async function checkDuplicateRegistration(
   email: string,
   contactNumber: string,
@@ -48,8 +55,29 @@ export async function checkDuplicateRegistration(
 }
 
 export async function saveRegistration(data: any, model: any) {
+  let reserved = false;
+  let seatKey: string | undefined;
   try {
     await connectToDatabase();
+    // Enforce seat limit for workshop models (atomic reserve using a counter collection)
+    const isWorkshop = WORKSHOP_MODEL_NAMES.has(model.modelName);
+    seatKey = model.modelName; // use model name as key for seat counter
+    const seatCollection = (await import('mongoose')).default.connection.collection('seat_counters');
+
+    if (isWorkshop) {
+      // try to atomically increment reserved if below capacity (120)
+      const res = await seatCollection.findOneAndUpdate(
+        { key: seatKey, $or: [{ reserved: { $lt: 120 } }, { reserved: { $exists: false } }] },
+        { $inc: { reserved: 1 }, $setOnInsert: { key: seatKey, capacity: 120, reserved: 0 } },
+        { upsert: true, returnDocument: 'after' }
+      );
+
+      if (!res || !res.value) {
+        return { success: false, message: 'Workshop registration closed. Seats are full.' };
+      }
+
+      reserved = true;
+    }
 
     const registration = new model(data);
     await registration.save();
@@ -62,11 +90,22 @@ export async function saveRegistration(data: any, model: any) {
   } catch (error: any) {
     console.error('Error saving registration:', error);
 
+    // If we reserved a seat but saving failed, release the seat (best-effort)
+    try {
+      if (reserved && seatKey) {
+        const mongoose = (await import('mongoose')).default;
+        const seatCollection = mongoose.connection.collection('seat_counters');
+        await seatCollection.updateOne({ key: seatKey }, { $inc: { reserved: -1 } });
+      }
+    } catch (e) {
+      // ignore release errors
+    }
+
     if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
+      const field = Object.keys(error.keyValue || {})[0];
       return {
         success: false,
-        message: `\ already registered for this event`,
+        message: `This ${field} is already registered for this event`,
         error: field,
       };
     }
@@ -75,5 +114,16 @@ export async function saveRegistration(data: any, model: any) {
       success: false,
       message: error.message || 'Registration failed',
     };
+  }
+}
+
+export async function getRegistrationCount(model: any) {
+  try {
+    await connectToDatabase();
+    const count = await model.countDocuments();
+    return { success: true, count };
+  } catch (error) {
+    console.error('Error getting registration count:', error);
+    return { success: false, message: 'Failed to get count' };
   }
 }

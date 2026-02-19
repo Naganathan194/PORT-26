@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, CreditCard } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useRouter } from 'next/navigation';
 
@@ -93,7 +93,11 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, 
               </ol>
 
               <div className={`mt-5 p-3.5 rounded-lg text-sm leading-relaxed ${theme === 'light' ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-amber-500/10 border border-amber-500/20 text-amber-300'}`}>
-                <strong>💳 Payment:</strong> Pay using the QR code displayed on the Townscript page. After payment, enter your <strong>Transaction ID</strong> and upload a <strong>transaction screenshot</strong> on the same page. Your ticket will be issued once the payment is verified.
+                <div className="flex items-center gap-2">
+                  <CreditCard className="w-4 h-4" />
+                  <strong>Payment:</strong>
+                </div>
+                <div className="mt-1">Pay using the QR code displayed on the Townscript page. After payment, enter your <strong>Transaction ID</strong> and upload a <strong>transaction screenshot</strong> on the same page. Your ticket will be issued once the payment is verified.</div>
               </div>
 
               <label className={`flex items-center gap-2.5 mt-6 cursor-pointer select-none ${colors.textSecondary} text-sm`}>

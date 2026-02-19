@@ -98,6 +98,8 @@ export async function checkTransactionIdAcrossAllCollections(
 }
 
 export async function saveRegistration(data: any, model: any) {
+  let reserved = false;
+  let seatKey: string | undefined;
   try {
     await connectToDatabase();
 
@@ -111,6 +113,26 @@ export async function saveRegistration(data: any, model: any) {
       };
     }
 
+    // Enforce seat limit for workshop models using an atomic counter collection
+    const isWorkshop = WORKSHOP_COLLECTIONS.some(c => c.model === model);
+    if (isWorkshop) {
+      seatKey = model.modelName || model.collectionName || model.name;
+      const mongoose = (await import('mongoose')).default;
+      const seatCollection = mongoose.connection.collection('seat_counters');
+
+      const res = await seatCollection.findOneAndUpdate(
+        { key: seatKey, $or: [{ reserved: { $lt: 120 } }, { reserved: { $exists: false } }] },
+        { $inc: { reserved: 1 }, $setOnInsert: { key: seatKey, capacity: 120, reserved: 0 } },
+        { upsert: true, returnDocument: 'after' }
+      );
+
+      if (!res || !res.value) {
+        return { success: false, message: 'Workshop registration closed. Seats are full.' };
+      }
+
+      reserved = true;
+    }
+
     const registration = new model(data);
     await registration.save();
 
@@ -122,29 +144,38 @@ export async function saveRegistration(data: any, model: any) {
   } catch (error: any) {
     console.error('Error saving registration:', error);
 
-    if (error.code === 11000) {
-      const field = Object.keys(error.keyValue)[0];
-      let message = `${field} already registered for this event`;
-      
-      // Provide more specific error messages
-      if (field === 'email') {
-        message = 'Email is already registered for this event';
-      } else if (field === 'contactNumber') {
-        message = 'Contact number is already registered for this event';
-      } else if (field === 'transactionId') {
-        message = 'Transaction ID is already used. Each transaction ID can only be used once.';
+    // If we reserved a seat but saving failed, release it (best-effort)
+    try {
+      if (reserved && seatKey) {
+        const mongoose = (await import('mongoose')).default;
+        const seatCollection = mongoose.connection.collection('seat_counters');
+        await seatCollection.updateOne({ key: seatKey }, { $inc: { reserved: -1 } });
       }
-      
-      return {
-        success: false,
-        message,
-        error: field,
-      };
+    } catch (e) {
+      // ignore
     }
 
-    return {
-      success: false,
-      message: error.message || 'Registration failed',
-    };
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue || {})[0];
+      let message = `${field} already registered for this event`;
+      if (field === 'email') message = 'Email is already registered for this event';
+      else if (field === 'contactNumber') message = 'Contact number is already registered for this event';
+      else if (field === 'transactionId') message = 'Transaction ID is already used. Each transaction ID can only be used once.';
+
+      return { success: false, message, error: field };
+    }
+
+    return { success: false, message: error.message || 'Registration failed' };
+  }
+}
+
+export async function getRegistrationCount(model: any) {
+  try {
+    await connectToDatabase();
+    const count = await model.countDocuments();
+    return { success: true, count };
+  } catch (error) {
+    console.error('Error getting registration count:', error);
+    return { success: false, message: 'Failed to get count' };
   }
 }

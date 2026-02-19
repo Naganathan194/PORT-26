@@ -1,10 +1,15 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { FullStackFusionRegistration } from '@/models/Registration';
-import { checkDuplicateRegistration, saveRegistration } from '@/lib/registrationUtils';
+import { checkDuplicateRegistration, saveRegistration, getRegistrationCount } from '@/lib/registrationUtils';
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
+    // If client requests count, return current registration count
+    if (searchParams.get('count') === 'true') {
+      const cnt = await getRegistrationCount(FullStackFusionRegistration);
+      return NextResponse.json(cnt);
+    }
     const email = searchParams.get('email');
     const phone = searchParams.get('phone');
     if (!email || !phone) {
