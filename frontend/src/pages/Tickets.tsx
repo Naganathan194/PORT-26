@@ -1,42 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../contexts/ThemeContext';
-import { useSearchParams } from 'react-router-dom';
 import qrImg from '../assets/imgs/krishnaprakash sir.jpeg';
 
-const tabs = [
-    {
-        id: 'workshop',
-        label: 'Workshop — Day 1',
-        src: 'https://www.townscript.com/v2/widget/workshop-of-port-2k26/booking',
-    },
-    {
-        id: 'events',
-        label: 'Events — Day 2',
-        src: 'https://www.townscript.com/v2/widget/port-2026/booking',
-    },
-];
-
 const Tickets: React.FC = () => {
-    const [searchParams] = useSearchParams();
-    const tabParam = searchParams.get('tab');
-    const [activeTab, setActiveTab] = useState(tabParam === 'events' ? 'events' : tabParam === 'workshop' ? 'workshop' : tabs[0].id);
-    const activeSrc = tabs.find((t) => t.id === activeTab)!.src;
     const { theme, colors } = useTheme();
-
-    useEffect(() => {
-        if (tabParam === 'events' || tabParam === 'workshop') {
-            setActiveTab(tabParam);
-        }
-    }, [tabParam]);
 
     return (
         <section className={`relative min-h-screen ${colors.bgPrimary} pt-32 pb-24 px-4 overflow-hidden transition-colors duration-300`}>
-            <link
-                rel="stylesheet"
-                href="https://www.townscript.com/static/Bookingflow/css/ts-iframe.style.css"
-            />
-
             {/* Animated background elements */}
             <div className="pointer-events-none absolute inset-0">
                 <div className="absolute top-20 left-1/4 w-72 h-72 bg-violet-600/15 rounded-full blur-[100px] animate-pulse" />
@@ -51,7 +22,6 @@ const Tickets: React.FC = () => {
                 transition={{ duration: 0.6 }}
                 className="relative flex flex-col md:flex-row items-center justify-center gap-8 mb-10"
             >
-                {/* Text */}
                 <div className="text-center md:text-right">
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -80,81 +50,56 @@ const Tickets: React.FC = () => {
                 />
             </motion.div>
 
-            {/* Tabs */}
+            {/* Important note (highlighted) */}
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="relative flex justify-center gap-3 mb-12"
+                transition={{ duration: 0.5 }}
+                className="max-w-3xl mx-auto mb-8"
             >
-                <div className={`flex ${theme === 'light' ? 'bg-slate-200/80' : 'bg-slate-900/80'} backdrop-blur-sm p-1.5 rounded-full border ${colors.border} transition-colors duration-300`}>
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className="relative px-7 py-2.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300 z-10"
-                        >
-                            {activeTab === tab.id && (
-                                <motion.div
-                                    layoutId="tab-bg"
-                                    className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full shadow-lg shadow-violet-900/50"
-                                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                                />
-                            )}
-                            <span className={`relative z-10 ${activeTab === tab.id ? 'text-white' : `${colors.textTertiary} ${theme === 'light' ? 'hover:text-slate-900' : 'hover:text-slate-200'}`}`}>
-                                {tab.label}
-                            </span>
-                        </button>
-                    ))}
+                <div className={`rounded-2xl p-[1px] ${"bg-gradient-to-r " + colors.gradientFrom + " " + colors.gradientTo}`}>
+                    <div className={`rounded-2xl p-4 md:p-6 shadow-lg ${colors.cardBg}`}>
+                        <p className={`${colors.textPrimary} text-sm md:text-base font-semibold`}>
+                            <span className="inline-block mr-2">⚠️</span>
+                            Registration fee of <span className="font-extrabold">₹350</span> must be paid separately for each day, and the Google Form must be submitted separately for each day.
+                        </p>
+                    </div>
                 </div>
             </motion.div>
 
-            {/* Iframe container */}
+            {/* Two cards for Day 1 and Day 2 forms */}
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="relative max-w-5xl mx-auto"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-                {/* Animated spinning gradient border */}
-                <div className="absolute -inset-[2px] rounded-2xl overflow-hidden">
-                    <div
-                        className="absolute inset-0 bg-[conic-gradient(from_0deg,#7c3aed,#4f46e5,#f59e0b,#7c3aed)] opacity-60"
-                        style={{
-                            animation: 'spin 6s linear infinite',
-                        }}
-                    />
+                <div className={`relative rounded-2xl overflow-hidden ${colors.cardBg} p-6 shadow-2xl ${colors.border}`}>
+                    <h2 className={`text-xl font-bold ${colors.textPrimary} mb-2`}>Day 1 — Workshop</h2>
+                    <p className={`${colors.textTertiary} text-sm mb-4`}>Submit the workshop registration form for Day 1. Fee: ₹350 (pay separately).</p>
+                    <a
+                        href="https://forms.gle/A9fhoXCPQ8WaAiWD6"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-5 py-2.5 rounded-lg bg-violet-600 text-white font-semibold shadow hover:brightness-105 transition"
+                    >
+                        Open Workshop Form
+                    </a>
                 </div>
 
-                {/* Glow */}
-                <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-violet-600/15 via-indigo-600/10 to-amber-500/10 blur-2xl" />
-
-                <motion.div
-                    key={activeTab}
-                    initial={{ opacity: 0, scale: 0.99 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.35 }}
-                    className="relative rounded-2xl overflow-hidden bg-white shadow-2xl shadow-violet-950/50"
-                >
-                    <iframe
-                        id="ts-iframe"
-                        src={activeSrc}
-                        frameBorder="0"
-                        height="800"
-                        width="100%"
-                        title="Townscript Booking"
-                        style={{ display: 'block' }}
-                    />
-                </motion.div>
+                <div className={`relative rounded-2xl overflow-hidden ${colors.cardBg} p-6 shadow-2xl ${colors.border}`}>
+                    <h2 className={`text-xl font-bold ${colors.textPrimary} mb-2`}>Day 2 — Events</h2>
+                    <p className={`${colors.textTertiary} text-sm mb-4`}>Submit the events registration form for Day 2. Fee: ₹350 (pay separately).</p>
+                    <a
+                        href="https://forms.gle/FieyYtkUPKyumf3W7"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block px-5 py-2.5 rounded-lg bg-indigo-600 text-white font-semibold shadow hover:brightness-105 transition"
+                    >
+                        Open Events Form
+                    </a>
+                </div>
             </motion.div>
-
-            {/* CSS for spinning animation */}
-            <style>{`
-                @keyframes spin {
-                    from { transform: rotate(0deg) scale(1.5); }
-                    to   { transform: rotate(360deg) scale(1.5); }
-                }
-            `}</style>
         </section>
     );
 };

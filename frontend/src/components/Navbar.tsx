@@ -5,6 +5,7 @@ import { Menu, X, Sun, Moon, Instagram } from 'lucide-react';
 import logo from '../assets/imgs/logo.png';
 
 import { useTheme } from '../contexts/ThemeContext';
+import RegistrationModal from './RegistrationModal';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme, colors } = useTheme();
+  const [showRegModal, setShowRegModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -106,11 +108,9 @@ const Navbar: React.FC = () => {
           >
             {theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
           </button>
-          <Link to="/tickets" onClick={scrollToTop}>
-            <button className={`px-6 py-2 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} text-white font-medium rounded-full shadow-lg ${theme === 'light' ? 'shadow-violet-500/50 hover:shadow-violet-500/80' : 'shadow-violet-900/50 hover:shadow-violet-900/80'} hover:scale-105 transition-all duration-300 text-sm`}>
-              Get Tickets
-            </button>
-          </Link>
+          <button onClick={() => setShowRegModal(true)} className={`px-6 py-2 bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} text-white font-medium rounded-full shadow-lg ${theme === 'light' ? 'shadow-violet-500/50 hover:shadow-violet-500/80' : 'shadow-violet-900/50 hover:shadow-violet-900/80'} hover:scale-105 transition-all duration-300 text-sm`}>
+            Get Tickets
+          </button>
         </div>
 
         {/* Mobile Toggle & Theme */}
@@ -189,21 +189,22 @@ const Navbar: React.FC = () => {
                 transition={{ delay: navLinks.length * 0.1, duration: 0.3 }}
                 className="pt-2"
               >
-                <Link
-                  to="/tickets"
+                <button
                   onClick={() => {
                     setIsOpen(false);
+                    setShowRegModal(true);
                     scrollToTop();
                   }}
                   className={`block w-full text-center px-3 py-3 rounded-xl font-bold text-sm bg-gradient-to-r ${colors.gradientFrom} ${colors.gradientTo} text-white shadow-lg`}
                 >
                   Get Tickets
-                </Link>
+                </button>
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+      <RegistrationModal isOpen={showRegModal} onClose={() => setShowRegModal(false)} ticketTab="events" />
     </nav>
   );
 };
