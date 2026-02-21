@@ -1,9 +1,9 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { X, CreditCard, Paperclip } from 'lucide-react';
+import { CreditCard, Paperclip } from 'lucide-react';
 
 interface RegistrationFormProps {
   workshopId: string;
@@ -20,7 +20,7 @@ interface FormData {
   contactNumber: string;
   gender: string;
   transactionId: string;
-  paymentScreenshot: string; // base64 data-URL
+  paymentScreenshot: string;
   collegeName: string;
   department: string;
   yearOfStudy: string;
@@ -32,7 +32,6 @@ interface FormErrors {
   [key: string]: string;
 }
 
-// Map workshop IDs to API endpoints
 const workshopIdToEndpoint: Record<string, string> = {
   'ws-1': 'hackproofing',
   'ws-2': 'prompt-to-product',
@@ -73,14 +72,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   // ── Validation ────────────────────────────────────────────────────────────
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
-
     if (!formData.firstName.trim()) newErrors.firstName = 'First Name is required';
-    if (!formData.lastName.trim())  newErrors.lastName  = 'Last Name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last Name is required';
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim())              newErrors.email = 'Email is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!emailRegex.test(formData.email)) newErrors.email = 'Please enter a valid email';
-
     if (formData.confirmEmail !== formData.email) newErrors.confirmEmail = 'Emails do not match';
 
     const phoneRegex = /^[0-9]{10}$/;
@@ -90,19 +87,14 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       newErrors.contactNumber = 'Please enter a valid 10-digit phone number';
 
     if (!formData.gender) newErrors.gender = 'Gender is required';
-
-    // Transaction ID
-    if (!formData.transactionId.trim())
-      newErrors.transactionId = 'Transaction ID is required';
-
-    if (!formData.paymentScreenshot)
-      newErrors.paymentScreenshot = 'Payment screenshot is required';
-
-    if (!formData.collegeName.trim())           newErrors.collegeName           = 'College Name is required';
-    if (!formData.department.trim())            newErrors.department            = 'Department is required';
-    if (!formData.yearOfStudy)                  newErrors.yearOfStudy           = 'Year of Study is required';
-    if (!formData.collegeRegisterNumber.trim()) newErrors.collegeRegisterNumber = 'College Register Number is required';
-    if (!formData.city.trim())                  newErrors.city                  = 'City is required';
+    if (!formData.transactionId.trim()) newErrors.transactionId = 'Transaction ID is required';
+    if (!formData.paymentScreenshot) newErrors.paymentScreenshot = 'Payment screenshot is required';
+    if (!formData.collegeName.trim()) newErrors.collegeName = 'College Name is required';
+    if (!formData.department.trim()) newErrors.department = 'Department is required';
+    if (!formData.yearOfStudy) newErrors.yearOfStudy = 'Year of Study is required';
+    if (!formData.collegeRegisterNumber.trim())
+      newErrors.collegeRegisterNumber = 'College Register Number is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -119,17 +111,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         workshopId === 'port-pass'
           ? '/api/port-pass'
           : `/api/workshops/${apiEndpoint}`;
-
       const res = await fetch(`${endpoint}?email=${email}&phone=${phone}`);
       if (!res.ok) return true;
-
       const contentType = res.headers.get('content-type');
       if (!contentType?.includes('application/json')) return true;
-
       const data = await res.json();
       if (data.isDuplicate) {
-        const fieldName = data.field === 'email' ? 'email address' : 'phone number';
-        toast.error(data.message || `This ${fieldName} is already registered.`);
+        toast.error(data.message || `This ${data.field} is already registered for this event.`);
         return false;
       }
       return true;
@@ -151,7 +139,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         formData.email,
         formData.contactNumber.replace(/\D/g, '')
       );
-      if (!noDuplicate) { setLoading(false); return; }
+      if (!noDuplicate) { toast.dismiss(toastId); setLoading(false); return; }
 
       const apiEndpoint = workshopIdToEndpoint[workshopId] || workshopId;
       const endpoint =
@@ -163,19 +151,19 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName:             formData.firstName,
-          lastName:              formData.lastName,
-          email:                 formData.email,
-          contactNumber:         formData.contactNumber.replace(/\D/g, ''),
-          gender:                formData.gender,
-          paymentMode:           'UPI',
-          transactionId:         formData.transactionId.trim(),
-          paymentScreenshot:     formData.paymentScreenshot,
-          collegeName:           formData.collegeName,
-          department:            formData.department,
-          yearOfStudy:           formData.yearOfStudy,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          contactNumber: formData.contactNumber.replace(/\D/g, ''),
+          gender: formData.gender,
+          paymentMode: 'UPI',
+          transactionId: formData.transactionId.trim(),
+          paymentScreenshot: formData.paymentScreenshot,
+          collegeName: formData.collegeName,
+          department: formData.department,
+          yearOfStudy: formData.yearOfStudy,
           collegeRegisterNumber: formData.collegeRegisterNumber,
-          city:                  formData.city,
+          city: formData.city,
         }),
       });
 
@@ -186,41 +174,24 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(`Successfully registered for ${workshopName}!`, { id: toastId, duration: 4000 });
+        toast.success(
+          `🎫 Registered for ${workshopName}! Your ticket will be emailed within 24 hours.`,
+          { id: toastId, duration: 7000 }
+        );
         setFormData(EMPTY_FORM);
         setScreenshotPreview('');
         try {
-          // notify other tabs/components about updated registrations
-          const bc = typeof window !== 'undefined' && 'BroadcastChannel' in window ? new BroadcastChannel('registrations') : null;
+          const bc = typeof window !== 'undefined' && 'BroadcastChannel' in window
+            ? new BroadcastChannel('registrations') : null;
           bc?.postMessage({ workshopId, action: 'registered' });
-        } catch (e) {
-          // ignore
-        }
-        setTimeout(() => { onSuccess?.(); }, 2000);
+        } catch { /* ignore */ }
+        setTimeout(() => { onSuccess?.(); }, 2500);
       } else {
-        // Handle specific error messages from backend
-        let errorMessage = 'Registration failed. Please try again.';
-        
-        if (data.message) {
-          const msg = data.message.toLowerCase();
-          if (msg.includes('email') && msg.includes('already')) {
-            errorMessage = 'This email is already registered.';
-          } else if (msg.includes('contact') || msg.includes('phone')) {
-            errorMessage = 'This phone number is already registered.';
-          } else if (msg.includes('transaction')) {
-            errorMessage = 'This transaction ID has already been used.';
-          } else if (msg.includes('workshop')) {
-            errorMessage = 'You can only register for one workshop.';
-          } else {
-            errorMessage = data.message;
-          }
-        }
-        
-        toast.error(errorMessage, { id: toastId });
+        toast.error(data.message || 'Registration failed. Please try again.', { id: toastId });
       }
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error('An error occurred. Please try again.', { id: toastId });
+      toast.error('An unexpected error occurred. Please try again.', { id: toastId });
     } finally {
       setLoading(false);
     }
@@ -238,7 +209,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (!file.type.startsWith('image/')) {
       setErrors((prev) => ({ ...prev, paymentScreenshot: 'Please upload an image file' }));
       return;
@@ -247,7 +217,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       setErrors((prev) => ({ ...prev, paymentScreenshot: 'Image must be smaller than 5 MB' }));
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
@@ -260,21 +229,21 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
   // ── Shared input className ────────────────────────────────────────────────
   const inputCls = (field: string) =>
-    `w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-600 dark:bg-slate-800 dark:border-slate-700 dark:text-white ${
-      errors[field] ? 'border-red-500' : ''
+    `w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-600 dark:bg-slate-800 dark:border-slate-700 dark:text-white ${errors[field] ? 'border-red-500' : ''
     }`;
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Header */}
-      <div className="bg-linear-to-r from-violet-600 to-indigo-600 px-6 py-6 text-white rounded-t-2xl">
+      <div className="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-6 text-white rounded-t-2xl">
         <h2 className="text-2xl font-bold">{workshopName}</h2>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-b-2xl shadow-xl">
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+
           {/* Row 1: First Name & Last Name */}
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -340,7 +309,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </div>
           </div>
 
-          {/* Row 4: UPI Payment (UPI only) */}
+          {/* Row 4: UPI Payment */}
           <div className="rounded-xl border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/30 p-4 space-y-4">
             <p className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
               <CreditCard className="w-4 h-4" /> Payment — UPI Only
@@ -365,9 +334,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
               <div
                 onClick={() => fileInputRef.current?.click()}
                 className={`cursor-pointer flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg py-6 transition
-                  ${errors.paymentScreenshot ? 'border-red-500' : 'border-violet-300 dark:border-violet-700'}
-                  hover:border-violet-500 dark:hover:border-violet-400
-                  bg-white dark:bg-slate-800`}
+                    ${errors.paymentScreenshot ? 'border-red-500' : 'border-violet-300 dark:border-violet-700'}
+                    hover:border-violet-500 dark:hover:border-violet-400
+                    bg-white dark:bg-slate-800`}
               >
                 {screenshotPreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -375,7 +344,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
                     className="max-h-40 rounded-lg object-contain" />
                 ) : (
                   <>
-                    <Paperclip className="text-3xl w-8 h-8" />
+                    <Paperclip className="w-8 h-8 text-slate-400" />
                     <span className="text-sm text-slate-500 dark:text-slate-400">
                       Click to upload payment screenshot
                     </span>
@@ -474,7 +443,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Registering...' : 'Register Now'}
             </button>
