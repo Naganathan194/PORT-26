@@ -136,16 +136,29 @@ export async function saveRegistration(data: any, model: any) {
       const mongoose = (await import('mongoose')).default;
       const seatCollection = mongoose.connection.collection('seat_counters');
 
+      // Debug: check current state before update
+      const currentDoc = await seatCollection.findOne({ key: seatKey });
+      console.log(`[DEBUG] Seat reservation attempt for "${workshopEntry.eventName}"`);
+      console.log(`[DEBUG] seatKey: ${seatKey}`);
+      console.log(`[DEBUG] Current seat_counters doc:`, currentDoc);
+
       const res = await seatCollection.findOneAndUpdate(
         { key: seatKey, $or: [{ reserved: { $lt: 120 } }, { reserved: { $exists: false } }] },
-        { $inc: { reserved: 1 }, $setOnInsert: { key: seatKey, capacity: 120, reserved: 0 } },
+        { $inc: { reserved: 1 }, $setOnInsert: { key: seatKey, capacity: 120 } },
         { upsert: true, returnDocument: 'after' }
       );
 
-      if (!res || !res.value) {
+      console.log(`[DEBUG] findOneAndUpdate result:`, res);
+      console.log(`[DEBUG] res.value:`, res?.value);
+
+      // MongoDB driver returns document directly in res (not res.value) in newer versions
+      const updatedDoc = res?.value || res;
+      if (!updatedDoc || typeof updatedDoc.reserved !== 'number') {
+        console.log(`[DEBUG] REJECTED: No document matched or upsert failed`);
         return { success: false, message: `"${workshopEntry.eventName}" is fully booked. No seats remaining.` };
       }
 
+      console.log(`[DEBUG] SUCCESS: Reserved seat. New count: ${updatedDoc.reserved}/120`);
       reserved = true;
     }
 
