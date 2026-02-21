@@ -12,6 +12,7 @@ import ImageWithSkeleton from '@/components/ImageWithSkeleton';
 const Workshops: React.FC = () => {
   const { theme, colors } = useTheme();
   const [showRegModal, setShowRegModal] = useState(false);
+  const [selectedWorkshopId, setSelectedWorkshopId] = useState<string | null>(null);
   const [counts, setCounts] = useState<Record<string, number>>({});
   const TOTAL_SEATS = 120;
 
@@ -142,12 +143,15 @@ const Workshops: React.FC = () => {
                 </div>
 
                 <div className={`mt-auto flex flex-col sm:flex-row items-center justify-between gap-6 border-t ${colors.border} pt-8`}>
-                    <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${theme === 'light' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
-                      <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
-                      Spots Available
-                      <span className="ml-3 text-sm text-slate-600 dark:text-slate-300">{counts[workshop.id] === undefined ? 'Loading…' : `${Math.max(0, TOTAL_SEATS - counts[workshop.id])} / ${TOTAL_SEATS} remaining`}</span>
-                    </div>
-                  <button onClick={() => setShowRegModal(true)} className={`w-full sm:w-auto px-8 py-3 ${theme === 'light' ? 'bg-slate-900 hover:bg-amber-700' : 'bg-white hover:bg-amber-400'} ${theme === 'light' ? 'text-white' : 'text-slate-900'} font-bold rounded-lg transition-colors text-center`}>
+                  <div className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium ${theme === 'light' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+                    <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse" />
+                    Spots Available
+                    <span className="ml-3 text-sm text-slate-600 dark:text-slate-300">{counts[workshop.id] === undefined ? 'Loading…' : `${Math.max(0, TOTAL_SEATS - counts[workshop.id])} / ${TOTAL_SEATS} remaining`}</span>
+                  </div>
+                  <button onClick={() => {
+                    setSelectedWorkshopId(workshop.id);
+                    setShowRegModal(true);
+                  }} className={`w-full sm:w-auto px-8 py-3 ${theme === 'light' ? 'bg-slate-900 hover:bg-amber-700' : 'bg-white hover:bg-amber-400'} ${theme === 'light' ? 'text-white' : 'text-slate-900'} font-bold rounded-lg transition-colors text-center`}>
                     Register Now
                   </button>
                 </div>
@@ -161,6 +165,7 @@ const Workshops: React.FC = () => {
         isOpen={showRegModal}
         onClose={() => setShowRegModal(false)}
         ticketTab="workshops"
+        workshopId={selectedWorkshopId}
       />
 
       <script suppressHydrationWarning>

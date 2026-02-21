@@ -83,4 +83,3 @@ Configured in `vite.config.ts`:
 - `@constants` → `./src/constants`
 - `@assets` → `./src/assets`
 
-View app in AI Studio: https://ai.studio/apps/drive/1sX7Ob_94THyYXGBHZf8REDDu0b3I3LEh

@@ -188,12 +188,12 @@ const TimelineSection: React.FC = () => {
   const technicalTrack: TimelineItem[] = [
     { time: '', title: 'THINK IT. LINK IT', desc: '' },
     { time: '', title: 'AI FORGE', desc: '' },
-    { time: '', title: 'TWO MINDS, ONE CODE', desc: '' },
+    { time: '', title: 'LINK CODE', desc: '' },
     { time: '', title: 'MINDSPRINT', desc: '' },
   ];
   const nonTechTrack: TimelineItem[] = [
     { time: '', title: 'GAME ON: FIFA SHOWDOWN', desc: '' },
-    { time: '', title: 'SEARCH FOR SHADES', desc: '' },
+    { time: '', title: 'COLOR HUNT', desc: '' },
     { time: '', title: 'FUN FIESTA', desc: '' },
     { time: '', title: 'GEN-AURORA', desc: '' },
   ];
