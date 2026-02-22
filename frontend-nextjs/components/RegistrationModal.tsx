@@ -1,4 +1,4 @@
- 'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,16 +10,21 @@ interface RegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
   ticketTab?: 'port-pass' | 'workshops';
+  workshopId?: string | null;
 }
 
-const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, ticketTab = 'workshops' }) => {
+const RegistrationModal: React.FC<RegistrationModalProps> = ({ isOpen, onClose, ticketTab = 'workshops', workshopId }) => {
   const { theme, colors } = useTheme();
   const [accepted, setAccepted] = useState(false);
   const router = useRouter();
 
   const handleOk = () => {
     if (accepted) {
-      router.push(`/tickets?tab=${ticketTab}`);
+      if (workshopId) {
+        router.push(`/tickets?tab=${ticketTab}&workshopId=${workshopId}`);
+      } else {
+        router.push(`/tickets?tab=${ticketTab}`);
+      }
       onClose();
       setAccepted(false);
     }

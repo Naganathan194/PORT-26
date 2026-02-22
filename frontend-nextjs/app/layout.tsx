@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import ToasterProvider from "@/components/ToasterProvider";
 import logo from "@/public/assets/imgs/logo.png";
+import BackToTop from "@/components/BackToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,6 +61,7 @@ export default function RootLayout({
           <main className="grow">
             {children}
           </main>
+          <BackToTop />
           <Footer />
         </ThemeProvider>
       </body>

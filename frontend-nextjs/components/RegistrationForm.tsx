@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import confetti from 'canvas-confetti';
 import { CreditCard, Paperclip } from 'lucide-react';
 
 interface RegistrationFormProps {
@@ -174,10 +175,68 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       const data = await response.json();
 
       if (response.ok) {
-        toast.success(
-          `🎫 Registered for ${workshopName}! Your ticket will be emailed within 24 hours.`,
-          { id: toastId, duration: 7000 }
+        toast.dismiss(toastId);
+
+        toast.custom(
+          (t) => (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5, y: -50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              className={`${t.visible ? 'animate-enter' : 'animate-leave'
+                } max-w-sm w-full bg-white dark:bg-slate-900 shadow-2xl rounded-2xl pointer-events-auto border border-violet-200 dark:border-violet-800 p-8 text-center relative overflow-hidden mt-[25vh]`}
+            >
+              <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-violet-600 to-indigo-600" />
+              <div className="mx-auto flex flex-col items-center justify-center h-20 w-20 rounded-full bg-violet-100 dark:bg-violet-900/30 mb-6 text-4xl shadow-inner border border-violet-200 dark:border-violet-800">
+                🎉
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Registration Successful!
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-8">
+                You are officially registered for{' '}
+                <strong className="text-violet-600 dark:text-violet-400">
+                  {workshopName}
+                </strong>
+                . Your ticket will be emailed within 24 hours.
+              </p>
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md focus:outline-none"
+              >
+                Awesome!
+              </button>
+            </motion.div>
+          ),
+          { duration: 8000, id: 'success-toast' }
         );
+
+        // Celebrate popper!
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        const frame = () => {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0 },
+            colors: ['#8b5cf6', '#a855f7', '#ec4899', '#f59e0b', '#10b981'],
+          });
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1 },
+            colors: ['#8b5cf6', '#a855f7', '#ec4899', '#f59e0b', '#10b981'],
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        };
+        frame();
+
         setFormData(EMPTY_FORM);
         setScreenshotPreview('');
         try {
