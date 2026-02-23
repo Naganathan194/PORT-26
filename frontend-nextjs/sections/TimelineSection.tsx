@@ -32,7 +32,7 @@ interface TrackColumnProps {
 
 const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, delayBase, actionUrl }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { theme: appTheme, colors } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <div className="relative flex flex-col h-full">
@@ -163,7 +163,7 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
                   transition={{ delay: delayBase + (idx * 0.15) }}
                   onMouseEnter={() => setHoveredIndex(idx)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className={`relative ${appTheme === 'light' ? 'bg-white border-slate-200 hover:border-violet-300' : 'bg-slate-900/80 border-white/5'} backdrop-blur-md border p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
+                  className={`relative bg-slate-900/80 border-white/5 backdrop-blur-md border p-4 rounded-xl hover:border-opacity-50 transition-all duration-500 group overflow-hidden ${theme.glow} ml-12 md:ml-16 lg:ml-20`}
                   style={{ borderColor: 'rgba(255,255,255,0.05)' }}
                 >
                   {/* Hover Gradient Border Effect */}
@@ -183,7 +183,7 @@ const TrackColumn: React.FC<TrackColumnProps> = ({ title, icon, theme, events, d
 };
 
 const TimelineSection: React.FC = () => {
-  const { theme, colors } = useTheme();
+  const { colors } = useTheme();
 
   const technicalTrack: TimelineItem[] = [
     { time: '', title: 'THINK IT. LINK IT', desc: '' },
@@ -214,7 +214,7 @@ const TimelineSection: React.FC = () => {
           <motion.h4
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className={`${theme === 'light' ? 'text-amber-600' : 'text-amber-400'} font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4 transition-colors duration-300`}
+            className={`text-amber-400 font-bold tracking-[0.2em] uppercase text-xs md:text-sm mb-4 transition-colors duration-300`}
           >
             The Journey
           </motion.h4>
