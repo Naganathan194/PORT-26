@@ -107,9 +107,27 @@ export async function POST(request: NextRequest) {
     }
 
     // ── Transaction ID check ────────────────────────────────────────────────
+    // '__PREFLIGHT__' is a sentinel value sent when the screenshot is uploaded
+    // before the user has finished typing the Transaction ID. In this case we
+    // skip the ID match and just confirm the account name is correct so the
+    // Tesseract worker is already warm when the real verification runs.
     const candidates = extractCandidates(text);
     const normalise = (s: string) => s.toUpperCase().trim();
-    const entered = normalise(transactionId);
+    const entered = normalise(transactionId!);
+
+    if (entered === '__PREFLIGHT__') {
+      return NextResponse.json({
+        success: true,
+        verified: false,
+        preflight: true,
+        accountNameFound: true,
+        accountNameMissing: false,
+        candidates,
+        ocrText: text,
+        message: 'Account holder name verified. Enter your Transaction ID to complete verification.',
+      });
+    }
+
     const matched = candidates.some((c) => normalise(c) === entered);
 
     return NextResponse.json({

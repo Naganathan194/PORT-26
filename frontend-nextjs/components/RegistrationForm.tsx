@@ -4,8 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import confetti from 'canvas-confetti';
-import { CreditCard, Paperclip, CheckCircle2, XCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, X, Camera, ExternalLink } from 'lucide-react';
-import Image from 'next/image';
+import { CreditCard, Paperclip, CheckCircle2, XCircle, Loader2, AlertCircle, ChevronLeft, ChevronRight, X, Camera } from 'lucide-react';
 
 // ── UPI App carousel data ────────────────────────────────────────────────────
 const UPI_APPS = [
@@ -134,6 +133,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         toast.error('Account holder name "RAJAGOPAL RAMARAO" not found in screenshot.', { duration: 5000 });
         return;
       }
+      // Preflight: account name is good but no txId to match yet — stay idle
+      if (json.preflight) {
+        setVerifyStatus('idle');
+        setVerifyMessage('');
+        return;
+      }
       if (json.verified) {
         setVerifyStatus('verified');
         setVerifyMessage('Transaction ID matches the screenshot ✓');
@@ -151,8 +156,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
   }, []);
 
-  // Re-verify whenever transactionId or screenshot changes
-  // Use a short debounce so we don't fire on every keypress
+  // Re-verify when transactionId changes (debounced 300 ms — screenshot upload
+  // triggers OCR directly in handleFileChange without going through this effect).
   useEffect(() => {
     if (!formData.paymentScreenshot || !formData.transactionId.trim()) {
       setVerifyStatus('idle');
@@ -161,9 +166,12 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
     const timer = setTimeout(() => {
       verifyPayment(formData.paymentScreenshot, formData.transactionId);
-    }, 600);
+    }, 300);
     return () => clearTimeout(timer);
-  }, [formData.transactionId, formData.paymentScreenshot, verifyPayment]);
+  // Only re-run when the typed Transaction ID changes; screenshot upload is
+  // handled separately in handleFileChange for an immediate (zero-delay) call.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formData.transactionId]);
 
   // ── Validation (with scroll-to-first-error) ───────────────────────────────
   const validateForm = (): boolean => {
@@ -242,6 +250,27 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+
+    // ── Hard blocks based on OCR verification state ────────────────────────
+    // If both screenshot and txId are filled but OCR hasn't started yet,
+    // kick it off now and tell the user to wait.
+    if (
+      verifyStatus === 'idle' &&
+      formData.paymentScreenshot &&
+      formData.transactionId.trim()
+    ) {
+      verifyPayment(formData.paymentScreenshot, formData.transactionId);
+      toast.error('Verification just started — please wait a moment and try again.', { duration: 5000 });
+      fieldRefs.transactionId?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    // Still verifying (OCR in progress) — do not allow submission
+    if (verifyStatus === 'verifying') {
+      toast.error('Verifying your payment screenshot… please wait until it completes.', { duration: 4000 });
+      fieldRefs.transactionId?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     // Block submission if account name is missing in screenshot
     if (verifyStatus === 'accountNameMissing') {
@@ -414,6 +443,16 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       setFormData((prev) => ({ ...prev, paymentScreenshot: dataUrl }));
       setScreenshotPreview(dataUrl);
       setErrors((prev) => ({ ...prev, paymentScreenshot: '' }));
+      // Kick off OCR immediately — do NOT wait for the debounced useEffect so
+      // verification starts as soon as the image is selected.
+      const currentTxId = formData.transactionId.trim();
+      if (currentTxId) {
+        verifyPayment(dataUrl, currentTxId);
+      } else {
+        // No txId yet: still run OCR pre-emptively with a placeholder so the
+        // worker boots before the user finishes typing.
+        verifyPayment(dataUrl, '__PREFLIGHT__');
+      }
     };
     reader.readAsDataURL(file);
   };
