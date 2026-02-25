@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createWorker } from 'tesseract.js';
+import { createWorker, Worker } from 'tesseract.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -40,6 +40,36 @@ function resolveLangPath(): string {
 
 /** The exact account holder name that must appear in the payment screenshot. */
 const REQUIRED_ACCOUNT_NAME = 'RAJAGOPAL RAMARAO';
+
+// ── Cached Tesseract worker ─────────────────────────────────────────────────
+// Re-use a single worker across warm Vercel invocations to avoid the ~2-4 s
+// WASM/model-load overhead on every request.
+let cachedWorker: Worker | null = null;
+let workerInitPromise: Promise<Worker> | null = null;
+
+async function getWorker(): Promise<Worker> {
+  if (cachedWorker) return cachedWorker;
+  // Deduplicate concurrent cold-start calls
+  if (!workerInitPromise) {
+    workerInitPromise = (async () => {
+      const langPath = resolveLangPath();
+      const w = await createWorker('eng', 1, {
+        langPath,
+        logger: () => {},
+        errorHandler: () => {},
+      });
+      cachedWorker = w;
+      return w;
+    })().catch((err) => {
+      // Reset so the next request retries initialisation
+      workerInitPromise = null;
+      throw err;
+    });
+  }
+  return workerInitPromise;
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 
 /** Candidate pattern: alphanumeric runs of 8–30 chars that commonly appear as
  *  Transaction IDs / UTR numbers / reference numbers in Indian payment screenshots. */
@@ -121,19 +151,25 @@ export async function POST(request: NextRequest) {
     const imageBuffer = Buffer.from(base64Data, 'base64');
 
     // Run OCR
-    // Use local /tmp copy of eng.traineddata (copied from the bundled project
-    // file on cold start) so no network round-trip is needed on Vercel.
-    // resolveLangPath() falls back to the projectnaptha CDN if the local file
-    // is absent (alternative deployment environments).
-    const langPath = resolveLangPath();
-    const worker = await createWorker('eng', 1, {
-      langPath,
-      logger: () => {},
-      errorHandler: () => {},
-    });
+    // Use the cached worker (warm invocations skip the ~2-4 s WASM init).
+    // resolveLangPath() copies eng.traineddata from the bundled project file
+    // to /tmp on the first cold start, then reuses the /tmp copy on subsequent
+    // warm invocations — no network round-trip needed on Vercel.
+    let worker: Worker;
+    try {
+      worker = await getWorker();
+    } catch {
+      // If worker init itself fails, reset so next request retries fresh
+      cachedWorker = null;
+      workerInitPromise = null;
+      return NextResponse.json(
+        { success: false, message: 'OCR engine failed to initialise. Please try again.' },
+        { status: 500 }
+      );
+    }
 
     const { data: { text } } = await worker.recognize(imageBuffer);
-    await worker.terminate();
+    // Do NOT terminate — keep the worker alive for reuse across warm invocations.
 
     // ── Account name check ──────────────────────────────────────────────────
     const accountNameFound = checkAccountName(text);
@@ -185,6 +221,10 @@ export async function POST(request: NextRequest) {
         : 'Transaction ID does not match what was found in the screenshot. Please double-check.',
     });
   } catch (error) {
+    // If the error came from worker.recognize(), invalidate the cached worker
+    // so the next request gets a fresh one instead of a broken instance.
+    cachedWorker = null;
+    workerInitPromise = null;
     console.error('Payment verification error:', error);
     return NextResponse.json(
       { success: false, message: 'Verification failed. Please try again.' },

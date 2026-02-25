@@ -6,10 +6,9 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["tesseract.js"],
   // Bundle eng.traineddata into the verify-payment serverless function so it
   // is available on Vercel's read-only filesystem via process.cwd().
-  experimental: {
-    outputFileTracingIncludes: {
-      '/api/verify-payment': ['./eng.traineddata'],
-    },
+  // NOTE: outputFileTracingIncludes was promoted to a top-level option in Next.js 15+
+  outputFileTracingIncludes: {
+    '/api/verify-payment': ['./eng.traineddata'],
   },
 };
 
