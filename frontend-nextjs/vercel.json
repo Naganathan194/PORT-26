@@ -1,8 +1,1 @@
-{
-  "functions": {
-    "app/api/verify-payment/route.ts": {
-      "memory": 2047,
-      "maxDuration": 60
-    }
-  }
-}
+{}
