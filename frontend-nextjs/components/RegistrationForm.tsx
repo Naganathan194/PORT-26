@@ -154,7 +154,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setVerifyStatus('verifying');
     setVerifyMessage('Checking payment details…');
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8_000); // API is just text matching
+    const timer = setTimeout(() => controller.abort(), 15_000); // API is just text matching
     try {
       const res = await fetch('/api/verify-payment', {
         method: 'POST',
