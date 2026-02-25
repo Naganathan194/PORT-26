@@ -66,6 +66,40 @@ const EMPTY_FORM: FormData = {
   city: '',
 };
 
+/**
+ * Run Tesseract OCR entirely in the browser using its built-in Web Worker.
+ * This completely avoids Vercel serverless function timeouts — the browser has
+ * no time limit and caches the WASM + model after the first run.
+ *
+ * @param imageDataUrl - the compressed data-URL from the canvas compressor
+ * @param onProgress  - callback with a human-readable progress string
+ */
+async function runBrowserOCR(
+  imageDataUrl: string,
+  onProgress: (msg: string) => void,
+): Promise<string> {
+  const { createWorker } = await import('tesseract.js');
+  onProgress('Loading OCR engine…');
+  const worker = await createWorker('eng', 1, {
+    logger: (m: { status: string; progress: number }) => {
+      if (m.status === 'loading tesseract core') onProgress('Loading OCR engine…');
+      else if (m.status === 'initializing tesseract') onProgress('Initialising OCR…');
+      else if (m.status === 'loading language traineddata') onProgress('Loading language data…');
+      else if (m.status === 'initializing api') onProgress('Preparing OCR…');
+      else if (m.status === 'recognizing text')
+        onProgress(`Reading screenshot… ${Math.round(m.progress * 100)}%`);
+    },
+  });
+  try {
+    const { data: { text } } = await worker.recognize(imageDataUrl);
+    await worker.terminate();
+    return text;
+  } catch (err) {
+    await worker.terminate();
+    throw err;
+  }
+}
+
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
   workshopId,
   workshopName,
@@ -80,6 +114,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [verifyStatus, setVerifyStatus] = useState<VerifyStatus>('idle');
   const [verifyMessage, setVerifyMessage] = useState<string>('');
+  // Stores the raw OCR text extracted in the browser — sent to the API instead of the image.
+  const [ocrText, setOcrText] = useState<string>('');
+  const [ocrProgress, setOcrProgress] = useState<string>('');
 
   // ── Carousel state ────────────────────────────────────────────────────────
   const [carouselOpen, setCarouselOpen] = useState(false);
@@ -106,22 +143,23 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // ── Payment verification ──────────────────────────────────────────────────
-  const verifyPayment = useCallback(async (imageBase64: string, txId: string) => {
-    if (!imageBase64 || !txId.trim()) {
+  // OCR already ran in the browser — this just sends the extracted text to the
+  // API for fast text-matching (< 100 ms, free-plan safe).
+  const verifyPayment = useCallback(async (extractedText: string, txId: string) => {
+    if (!extractedText || !txId.trim()) {
       setVerifyStatus('idle');
       setVerifyMessage('');
       return;
     }
     setVerifyStatus('verifying');
-    setVerifyMessage('');
-    // Client-side timeout: abort if the server takes > 55 s (Vercel Pro cap is 60 s)
+    setVerifyMessage('Checking payment details…');
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 55_000);
+    const timer = setTimeout(() => controller.abort(), 8_000); // API is just text matching
     try {
       const res = await fetch('/api/verify-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64, transactionId: txId.trim() }),
+        body: JSON.stringify({ ocrText: extractedText, transactionId: txId.trim() }),
         signal: controller.signal,
       });
       clearTimeout(timer);
@@ -171,20 +209,17 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     }
   }, []);
 
-  // Re-verify when transactionId changes (debounced 300 ms — screenshot upload
-  // triggers OCR directly in handleFileChange without going through this effect).
+  // Re-verify when transactionId changes (debounced 300 ms).
   useEffect(() => {
-    if (!formData.paymentScreenshot || !formData.transactionId.trim()) {
+    if (!ocrText || !formData.transactionId.trim()) {
       setVerifyStatus('idle');
       setVerifyMessage('');
       return;
     }
     const timer = setTimeout(() => {
-      verifyPayment(formData.paymentScreenshot, formData.transactionId);
+      verifyPayment(ocrText, formData.transactionId);
     }, 300);
     return () => clearTimeout(timer);
-  // Only re-run when the typed Transaction ID changes; screenshot upload is
-  // handled separately in handleFileChange for an immediate (zero-delay) call.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.transactionId]);
 
@@ -271,10 +306,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     // kick it off now and tell the user to wait.
     if (
       verifyStatus === 'idle' &&
-      formData.paymentScreenshot &&
+      ocrText &&
       formData.transactionId.trim()
     ) {
-      verifyPayment(formData.paymentScreenshot, formData.transactionId);
+      verifyPayment(ocrText, formData.transactionId);
       toast.error('Verification just started — please wait a moment and try again.', { duration: 5000 });
       fieldRefs.transactionId?.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -504,6 +539,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     // Show a temporary "compressing" state while the canvas resizes the image.
     setVerifyStatus('verifying');
     setVerifyMessage('Preparing image…');
+    setOcrText('');
+    setOcrProgress('');
     let dataUrl: string;
     try {
       dataUrl = await compressImage(file);
@@ -516,16 +553,26 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setFormData((prev) => ({ ...prev, paymentScreenshot: dataUrl }));
     setScreenshotPreview(dataUrl);
     setErrors((prev) => ({ ...prev, paymentScreenshot: '' }));
-    // Kick off OCR immediately — do NOT wait for the debounced useEffect so
-    // verification starts as soon as the image is selected.
-    const currentTxId = formData.transactionId.trim();
-    if (currentTxId) {
-      verifyPayment(dataUrl, currentTxId);
-    } else {
-      // No txId yet: still run OCR pre-emptively with a placeholder so the
-      // worker boots before the user finishes typing.
-      verifyPayment(dataUrl, '__PREFLIGHT__');
+
+    // Run OCR in the browser — no server timeout risk.
+    let extractedText = '';
+    try {
+      extractedText = await runBrowserOCR(dataUrl, (msg) => {
+        setOcrProgress(msg);
+        setVerifyMessage(msg);
+      });
+    } catch {
+      setErrors((prev) => ({ ...prev, paymentScreenshot: 'OCR failed — please try a clearer screenshot.' }));
+      setVerifyStatus('error');
+      setVerifyMessage('Could not read the screenshot. Please upload a clearer image.');
+      return;
     }
+    setOcrText(extractedText);
+    setOcrProgress('');
+
+    // Send extracted text to API for matching.
+    const currentTxId = formData.transactionId.trim();
+    verifyPayment(extractedText, currentTxId || '__PREFLIGHT__');
   };
 
   // ── Carousel helpers ──────────────────────────────────────────────────────
